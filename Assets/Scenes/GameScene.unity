@@ -237,6 +237,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 211685569021371614, guid: 2f0246f58486347269acab2f592e54c8, type: 3}
+      propertyPath: tomatoPrefab
+      value: 
+      objectReference: {fileID: 11400000, guid: a1bd4c0145a1d4ca385c5a76a9e5f17a, type: 2}
     - target: {fileID: 750009112923229159, guid: 2f0246f58486347269acab2f592e54c8, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -1025,6 +1029,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 211685569021371614, guid: 2f0246f58486347269acab2f592e54c8, type: 3}
+      propertyPath: tomatoPrefab
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f5beaf1e0a454668bbfdd31834667eb, type: 2}
     - target: {fileID: 750009112923229159, guid: 2f0246f58486347269acab2f592e54c8, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -1074,7 +1082,8 @@ PrefabInstance:
       value: ClearCounter
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5312147096671978616, guid: 2f0246f58486347269acab2f592e54c8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f0246f58486347269acab2f592e54c8, type: 3}
