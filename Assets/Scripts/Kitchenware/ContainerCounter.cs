@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClearCounter : BaseCounter
+public class ContainerCounter : BaseCounter
 {
+    public event EventHandler handleGrabbedObject;
     [SerializeField] private KitchenObjectSO initPrefab;
 
     public override void InteractPlayer(PlayerController playerController)
@@ -12,12 +13,8 @@ public class ClearCounter : BaseCounter
         if (!HasKitchenObject())
         {
             Transform prefab = Instantiate(initPrefab.prefabTransform);
-            prefab.GetComponent<KitchenObject>().SetKitchenObjectParent(this);
-        }
-        else
-        {
-            kitchenObject.SetKitchenObjectParent(playerController);
+            handleGrabbedObject?.Invoke(this,EventArgs.Empty);
+            prefab.GetComponent<KitchenObject>().SetKitchenObjectParent(playerController);
         }
     }
-    
 }
