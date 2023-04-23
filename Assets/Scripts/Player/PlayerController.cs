@@ -2,25 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour,IKitchenObjectParent
 {
     public static PlayerController Instance { get; private set; }
     
-    public event EventHandler<ClearCounterSelectedEventArgs> ClearCounterSelectedEvent;
-    public class ClearCounterSelectedEventArgs : EventArgs
+    public event EventHandler<BaseCounterSelectedEventArgs> BaseCounterSelectedEvent;
+    public class BaseCounterSelectedEventArgs : EventArgs
     {
-        public ClearCounter clearCounter;
+        public BaseCounter baseCounter;
     }
-
 
     [SerializeField] private GameInputManager gameInputManager;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotateSpeed = 10f;
-    [SerializeField] private LayerMask clearCounterLayerMask;
+    [FormerlySerializedAs("clearCounterLayerMask")] [SerializeField] private LayerMask baseCounterLayerMask;
+    [SerializeField] private Transform kitchenObjectParentPoint;
     
     
-    private ClearCounter clearCounterSelected;
+    private BaseCounter baseCounterSelected;
+    private KitchenObject kitchenObject;
     private Vector3 lastMoveDir;
     private bool isWalking;
     private const float PLAYERHEIGHT = 2f;
@@ -60,11 +62,11 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAYDISTANCE,
-                clearCounterLayerMask))
+                baseCounterLayerMask))
         {
-            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
-                clearCounter.InteractPlayer();
+                baseCounter.InteractPlayer(this);
             }
         }
     }
@@ -81,14 +83,14 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAYDISTANCE,
-                clearCounterLayerMask))
+                baseCounterLayerMask))
         {
-            SetSelectedCounter(
-                raycastHit.transform.TryGetComponent(out ClearCounter clearCounter) ? clearCounter : null);
+            SetBaseCounter(
+                raycastHit.transform.TryGetComponent(out BaseCounter baseCounter) ? baseCounter : null);
         }
         else
         {
-            SetSelectedCounter(null);
+            SetBaseCounter(null);
         }
     }
 
@@ -144,13 +146,38 @@ public class PlayerController : MonoBehaviour
         return isWalking;
     }
 
-    private void SetSelectedCounter(ClearCounter clearCounterSelected)
+    private void SetBaseCounter(BaseCounter baseCounterSelected)
     {
-        this.clearCounterSelected = clearCounterSelected;
+        this.baseCounterSelected = baseCounterSelected;
 
-        ClearCounterSelectedEvent?.Invoke(this, new ClearCounterSelectedEventArgs()
+        BaseCounterSelectedEvent?.Invoke(this, new BaseCounterSelectedEventArgs()
         {
-            clearCounter = clearCounterSelected
+            baseCounter = baseCounterSelected
         });
+    }
+
+    public Transform GetKitchenObjectFollowTransform()
+    {
+        return kitchenObjectParentPoint;
+    }
+
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this.kitchenObject = kitchenObject;
+    }
+
+    public KitchenObject GetKitchenObject()
+    {
+        return kitchenObject;
+    }
+
+    public void ClearKitchenObject()
+    {
+        kitchenObject = null;
+    }
+
+    public bool HasKitchenObject()
+    {
+        return kitchenObject != null;
     }
 }
