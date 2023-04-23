@@ -10,7 +10,7 @@ public class BaseCounter : MonoBehaviour,IKitchenObjectParent
 
     public virtual void InteractPlayer(PlayerController playerController)
     {
-        Debug.Log("VAR");
+        // Debug.Log("VAR");
     }
 
     public Transform GetKitchenObjectFollowTransform()
