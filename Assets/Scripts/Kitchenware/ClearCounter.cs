@@ -11,13 +11,27 @@ public class ClearCounter : BaseCounter
     {
         if (!HasKitchenObject())
         {
-            Transform prefab = Instantiate(initPrefab.prefabTransform);
-            prefab.GetComponent<KitchenObject>().SetKitchenObjectParent(this);
+            if (playerController.HasKitchenObject())
+            {
+                playerController.GetKitchenObject().SetKitchenObjectParent(this);
+                playerController.ClearKitchenObject();
+            }
+            else
+            {
+                Debug.Log("V");
+            }
         }
-        else
+        else 
         {
-            kitchenObject.SetKitchenObjectParent(playerController);
+            if (playerController.HasKitchenObject())
+            {
+                Debug.Log("VAR");
+            }
+            else
+            {
+                GetKitchenObject().SetKitchenObjectParent(playerController);
+                ClearKitchenObject();
+            }
         }
     }
-    
 }
