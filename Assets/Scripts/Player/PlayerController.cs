@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
     public class BaseCounterSelectedEventArgs : EventArgs
     {
         public BaseCounter baseCounter;
-    }
+    } 
 
     [SerializeField] private GameInputManager gameInputManager;
     [SerializeField] private float moveSpeed = 7f;
@@ -25,9 +25,9 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
     private KitchenObject kitchenObject;
     private Vector3 lastMoveDir;
     private bool isWalking;
-    private const float PLAYERHEIGHT = 2f;
-    private const float MOVEREDIUS = .7f;
-    private const float RAYDISTANCE = 2f;
+    private const float PLAYER_HEIGHT = 2f;
+    private const float MOVE_REDIUS = .7f;
+    private const float RAY_DISTANCE = 2f;
 
     private void Awake()
     {
@@ -42,13 +42,25 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
     private void Start()
     {
         gameInputManager.inputInteractHandler += OnInputInteractHandler;
+        gameInputManager.inputInteractAlternateHandler += OninputInteractAlternateHandler;
     }
-
-
+    
     private void Update()
     {
         HandleMovement();
         HandleInteract();
+    }
+    
+    private void OninputInteractAlternateHandler(object sender, EventArgs e)
+    {
+        if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAY_DISTANCE,
+                baseCounterLayerMask))
+        {
+            if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
+            {
+                baseCounter.InteractAlternatePlayer(this);
+            }
+        }
     }
 
     private void OnInputInteractHandler(object sender, EventArgs e)
@@ -61,7 +73,7 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
             lastMoveDir = moveDir;
         }
 
-        if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAYDISTANCE,
+        if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAY_DISTANCE,
                 baseCounterLayerMask))
         {
             if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
@@ -82,7 +94,7 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
             lastMoveDir = moveDir;
         }
 
-        if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAYDISTANCE,
+        if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAY_DISTANCE,
                 baseCounterLayerMask))
         {
             SetBaseCounter(
@@ -102,14 +114,14 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
 
         float moveDistance = moveSpeed * Time.deltaTime;
 
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYERHEIGHT,
-            MOVEREDIUS, moveDir, moveDistance);
+        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
+            MOVE_REDIUS, moveDir, moveDistance);
 
         if (!canMove)
         {
             Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-            canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYERHEIGHT,
-                MOVEREDIUS, moveDirX, moveDistance);
+            canMove = moveDirX.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
+                MOVE_REDIUS, moveDirX, moveDistance);
 
             if (canMove)
             {
@@ -118,8 +130,8 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
             else
             {
                 Vector3 moveDirZ = new Vector3(0, 0, moveDir.y).normalized;
-                canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYERHEIGHT,
-                    MOVEREDIUS, moveDirZ, moveDistance);
+                canMove = moveDirZ.y != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
+                    MOVE_REDIUS, moveDirZ, moveDistance);
 
                 if (canMove)
                 {
