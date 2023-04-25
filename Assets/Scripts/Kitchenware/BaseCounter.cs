@@ -10,7 +10,12 @@ public class BaseCounter : MonoBehaviour,IKitchenObjectParent
 
     public virtual void InteractPlayer(PlayerController playerController)
     {
-        // Debug.Log("VAR");
+        
+    }
+
+    public virtual void InteractAlternatePlayer(PlayerController playerController)
+    {
+        
     }
 
     public Transform GetKitchenObjectFollowTransform()
@@ -36,5 +41,10 @@ public class BaseCounter : MonoBehaviour,IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+    protected void DestroyKitchenObject(KitchenObject kitchenObject)
+    {
+        Destroy(kitchenObject.gameObject);
     }
 }
