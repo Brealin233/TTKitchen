@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CuttingCounter : BaseCounter
 {
-    [SerializeField] private KitchenObjectSO kitchenObjectSliceSO;
+    [SerializeField] private List<CuttingKitchenObjectSO> cuttingKitchenObjectSO;
 
     public override void InteractPlayer(PlayerController playerController)
     {
@@ -12,11 +13,14 @@ public class CuttingCounter : BaseCounter
         {
             if (playerController.HasKitchenObject())
             {
-                playerController.GetKitchenObject().SetKitchenObjectParent(this);
-                playerController.ClearKitchenObject();
+                if (HasRecipeKitchenObject(playerController.GetKitchenObject()))
+                {
+                    playerController.GetKitchenObject().SetKitchenObjectParent(this);
+                    playerController.ClearKitchenObject();
+                }
             }
         }
-        else 
+        else
         {
             if (!playerController.HasKitchenObject())
             {
@@ -30,12 +34,37 @@ public class CuttingCounter : BaseCounter
     {
         if (HasKitchenObject())
         {
-            DestroyKitchenObject(GetKitchenObject());
-
-            if (!playerController.HasKitchenObject())
+            if (!playerController.HasKitchenObject() && HasRecipeKitchenObject(GetKitchenObject()))
             {
-               KitchenObject.SpawnKitchenObject(kitchenObjectSliceSO,this);
+                DestroyKitchenObject(GetKitchenObject());
+                KitchenObject.SpawnKitchenObject(GetInputForOutputCuttingKitchenObject().GetKitchenObjectSO(), this);
             }
         }
+    }
+
+    private bool HasRecipeKitchenObject(KitchenObject kitchenObject)
+    {
+        foreach (CuttingKitchenObjectSO kitchenObjectSO in cuttingKitchenObjectSO)
+        {
+            if (kitchenObjectSO.inputKitchenObject.GetKitchenObjectSO() == kitchenObject.GetKitchenObjectSO())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private KitchenObject GetInputForOutputCuttingKitchenObject()
+    {
+        foreach (CuttingKitchenObjectSO kitchenObjectSO in cuttingKitchenObjectSO)
+        {
+            if (kitchenObjectSO.inputKitchenObject.GetKitchenObjectSO() == GetKitchenObject().GetKitchenObjectSO())
+            {
+                return kitchenObjectSO.outputKitchenObject;
+            }
+        }
+
+        return null;
     }
 }

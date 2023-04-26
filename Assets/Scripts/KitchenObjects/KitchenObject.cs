@@ -22,7 +22,7 @@ public class KitchenObject : MonoBehaviour
 
         if (kitchenObjectParent.HasKitchenObject())
         {
-            Debug.LogError("IKitchenObject already has a KitchenObject");
+            Debug.Log("Has a KitchenObject");
         }
         
         // todo: nothing implement
@@ -39,11 +39,12 @@ public class KitchenObject : MonoBehaviour
         return kitchenObjectParent;
     }
 
-    public static void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO,IKitchenObjectParent kitchenPoint)
+    public static KitchenObject SpawnKitchenObject(KitchenObjectSO kitchenObjectSO,IKitchenObjectParent kitchenPoint)
     {
-        Transform KitchenObject = Instantiate(kitchenObjectSO.prefabTransform);
-        KitchenObject.GetComponent<KitchenObject>().SetKitchenObjectParent(kitchenPoint);
+        Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefabTransform);
+        kitchenObjectTransform.GetComponent<KitchenObject>().SetKitchenObjectParent(kitchenPoint);
 
+        return kitchenObjectTransform.GetComponent<KitchenObject>();
     }
 }
 
