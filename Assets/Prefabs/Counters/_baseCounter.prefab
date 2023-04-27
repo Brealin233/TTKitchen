@@ -41,7 +41,6 @@ GameObject:
   m_Component:
   - component: {fileID: 750009112923229159}
   - component: {fileID: 308242842939213518}
-  - component: {fileID: 211685569021371614}
   m_Layer: 6
   m_Name: _baseCounter
   m_TagString: Untagged
@@ -86,17 +85,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &211685569021371614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8455757599737562142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4107b3592b9004b1d90a7aee4b907fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  initPrefab: {fileID: 0}
-  counterTopPoint: {fileID: 3072057395848762549}
