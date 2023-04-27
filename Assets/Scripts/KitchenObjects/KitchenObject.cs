@@ -25,7 +25,7 @@ public class KitchenObject : MonoBehaviour
             Debug.Log("Has a KitchenObject");
         }
         
-        // todo: nothing implement
+        // ? nothing implement
         // this.kitchenObjectParent = kitchenObjectParent;
 
         kitchenObjectParent.SetKitchenObject(this);

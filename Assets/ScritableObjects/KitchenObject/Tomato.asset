@@ -15,3 +15,4 @@ MonoBehaviour:
   objSprite: {fileID: 21300000, guid: 91e8fe3de9249fc44b7bdd8050062896, type: 3}
   prefabTransform: {fileID: 5742955524507448754, guid: 2aca270245c6540f9b80a7125c76f498, type: 3}
   objName: Tomato
+  cuttingTimeMax: 3

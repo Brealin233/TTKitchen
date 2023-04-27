@@ -8,4 +8,6 @@ public class KitchenObjectSO : ScriptableObject
     public Sprite objSprite;
     public Transform prefabTransform;
     public string objName;
+    public float cuttingTimeMax;
+
 }

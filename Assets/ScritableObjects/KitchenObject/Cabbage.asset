@@ -15,3 +15,4 @@ MonoBehaviour:
   objSprite: {fileID: 21300000, guid: e1c23b5aded59d84da30738d3267a6c9, type: 3}
   prefabTransform: {fileID: 3875619602615467836, guid: 9bc3e80a405ce44eb9d993197f4ef973, type: 3}
   objName: Cabbage
+  cuttingTimeMax: 5

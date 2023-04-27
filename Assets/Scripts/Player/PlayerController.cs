@@ -137,10 +137,6 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
                 {
                     moveDir = moveDirZ;
                 }
-                else
-                {
-                    // todo: cannot move any
-                }
             }
         }
 
