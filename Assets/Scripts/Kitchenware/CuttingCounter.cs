@@ -4,14 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class CuttingCounter : BaseCounter
+public class CuttingCounter : BaseCounter,IWasVisualCounter
 {
-    public event EventHandler<counterVisualEventClass> counterVisualEvent;
-
-    public class counterVisualEventClass : EventArgs
-    {
-        public float fillAmount;
-    }
+    public event EventHandler<IWasVisualCounter.counterVisualEventClass> counterVisualEvent;
 
     [SerializeField] private List<CuttingKitchenObjectSO> cuttingKitchenObjectSO;
 
@@ -26,7 +21,7 @@ public class CuttingCounter : BaseCounter
             {
                 if (HasRecipeKitchenObject(playerController.GetKitchenObject()))
                 {
-                    cuttingCount = 1;
+                    cuttingCount = 0;
                     playerController.GetKitchenObject().SetKitchenObjectParent(this);
                     playerController.ClearKitchenObject();
                 }
@@ -46,23 +41,24 @@ public class CuttingCounter : BaseCounter
     {
         if (HasKitchenObject())
         {
+            cuttingCount++;
+
             if (GetSliceKitchenObjectCountMax(GetKitchenObject()) != cuttingCount)
             {
                 if (!playerController.HasKitchenObject() && HasRecipeKitchenObject(GetKitchenObject()))
                 {
-                    cuttingCount++;
-                    counterVisualEvent?.Invoke(this,new counterVisualEventClass()
+                    counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
                     {
-                        fillAmount = cuttingCount
+                        fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())
                     });
                 }
             }
-            else if(GetInputForOutputCuttingKitchenObject())
+            else if(GetInputForOutputCuttingKitchenObject() && GetSliceKitchenObjectCountMax(GetKitchenObject()) == cuttingCount)
             {
                 DestroyKitchenObject(GetKitchenObject());
-                counterVisualEvent?.Invoke(this,new counterVisualEventClass()
+                counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
                 {
-                    fillAmount = cuttingCount + 1
+                    fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())
                 });
                 KitchenObject.SpawnKitchenObject(GetInputForOutputCuttingKitchenObject().GetKitchenObjectSO(), this);
             }
