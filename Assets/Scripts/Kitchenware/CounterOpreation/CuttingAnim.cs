@@ -15,10 +15,10 @@ public class CuttingAnim : MonoBehaviour
 
     private void Start()
     {
-        cuttingCounter.counterVisualEvent += OnCuttingCounterAnimVisualEvent;
+        cuttingCounter.counterVisualEvent += OnCuttingCounterAnimVisualEvents;
     }
-
-    private void OnCuttingCounterAnimVisualEvent(object sender, CuttingCounter.counterVisualEventClass e)
+    
+    private void OnCuttingCounterAnimVisualEvents(object sender,IWasVisualCounter.counterVisualEventClass e)
     {
         animator.SetTrigger(CuttingName);
     }

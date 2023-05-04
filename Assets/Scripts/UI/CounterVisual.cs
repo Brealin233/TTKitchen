@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,13 +6,16 @@ public class CounterVisual : MonoBehaviour
 {
     public event EventHandler FaceToCameraEvent; 
 
-    [SerializeField] private CuttingCounter cuttingCounter;
+    [SerializeField] private GameObject iWasVisualObject;
     [SerializeField] private GameObject counterVisualObject;
     [SerializeField] private Image fillImage;
+    
+    private IWasVisualCounter iWasVisualCounter;
 
     private void Start()
     {
-        cuttingCounter.counterVisualEvent += OnCounterVisualEvent;
+        iWasVisualCounter = iWasVisualObject.GetComponent<IWasVisualCounter>();
+        iWasVisualCounter.counterVisualEvent += OnCounterVisualEvent;
     }
 
     private void LateUpdate()
@@ -23,18 +23,13 @@ public class CounterVisual : MonoBehaviour
         FaceToCameraEvent?.Invoke(this,EventArgs.Empty);
     }
 
-    private void OnCounterVisualEvent(object sender, CuttingCounter.counterVisualEventClass e)
+    private void OnCounterVisualEvent(object sender, IWasVisualCounter.counterVisualEventClass e)
     {
-        if (e.fillAmount - 1 != cuttingCounter.kitchenObject.GetKitchenObjectSO().cuttingTimeMax)
-        {
-            fillImage.fillAmount =
-                (e.fillAmount - 1) / cuttingCounter.kitchenObject.GetKitchenObjectSO().cuttingTimeMax;
+        fillImage.fillAmount = e.fillAmount;
+        if (e.fillAmount != 0 && e.fillAmount != 1)
             Show();
-        }
-        else
-        {
+        else 
             Hide();
-        }
     }
 
     private void Show()
