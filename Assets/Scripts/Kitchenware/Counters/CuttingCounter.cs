@@ -28,7 +28,17 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
         }
         else
         {
-            if (!playerController.HasKitchenObject())
+            if (playerController.HasKitchenObject())
+            {
+                if (playerController.GetKitchenObject().GetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
+                {
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        DestroyKitchenObject(GetKitchenObject());
+                    }
+                }
+            }
+            else
             {
                 // todo: currently can move kitchenobject in UnSlice complete, and anim done with
 
