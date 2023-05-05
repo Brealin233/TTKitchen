@@ -21,11 +21,27 @@ public class ClearCounter : BaseCounter
                 // counter nothing，player nothing
             }
         }
-        else 
+        else
         {
             if (playerController.HasKitchenObject())
             {
-                // counter has one，and player have too
+                if (playerController.GetKitchenObject().GetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
+                {
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        DestroyKitchenObject(GetKitchenObject());
+                    }
+                }
+                else
+                {
+                    if (GetKitchenObject().GetPlateKitchenObject(out plateKitchenObject))
+                    {
+                        if (plateKitchenObject.TryAddIngredient(playerController.GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            DestroyKitchenObject(playerController.GetKitchenObject());
+                        }
+                    }
+                }
             }
             else
             {
