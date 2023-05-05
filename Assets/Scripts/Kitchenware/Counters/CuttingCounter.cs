@@ -14,7 +14,6 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
 
     public override void InteractPlayer(PlayerController playerController)
     {
-        // todo: currently can move kitchenobject in UnSlice complete  
         if (!HasKitchenObject())
         {
             if (playerController.HasKitchenObject())
@@ -31,7 +30,13 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
         {
             if (!playerController.HasKitchenObject())
             {
+                // todo: currently can move kitchenobject in UnSlice complete, and anim done with
+
                 GetKitchenObject().SetKitchenObjectParent(playerController);
+                counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
+                {
+                    fillAmount = 0f
+                });
                 ClearKitchenObject();
             }
         }
