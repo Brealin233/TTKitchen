@@ -75,6 +75,7 @@ public class StoveCounter : BaseCounter,IWasVisualCounter
                 
                 if (burnedTimeMax > burnedObjectSO.burnedTimerMax)
                 {
+                    // todo: fried state can move anywhere and the statebar alive
                     state = State.Burned;
                     DestroyKitchenObject(GetKitchenObject());
                     
@@ -128,6 +129,10 @@ public class StoveCounter : BaseCounter,IWasVisualCounter
                 stoveCounterVisualEvent?.Invoke(this,new StoveCounterVisualEvent
                 {
                     state = state
+                });
+                counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
+                {
+                    fillAmount = 0
                 });
             }
         }   
