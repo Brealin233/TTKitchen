@@ -9,5 +9,4 @@ public class KitchenObjectSO : ScriptableObject
     public Transform prefabTransform;
     public string objName;
     public float cuttingTimeMax;
-
 }

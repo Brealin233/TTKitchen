@@ -4,23 +4,26 @@ using UnityEngine.UI;
 
 public class CounterVisual : MonoBehaviour
 {
-    public event EventHandler FaceToCameraEvent; 
+    public event EventHandler FaceToCameraEvent;
 
     [SerializeField] private GameObject iWasVisualObject;
     [SerializeField] private GameObject counterVisualObject;
     [SerializeField] private Image fillImage;
-    
+
     private IWasVisualCounter iWasVisualCounter;
 
     private void Start()
     {
-        iWasVisualCounter = iWasVisualObject.GetComponent<IWasVisualCounter>();
-        iWasVisualCounter.counterVisualEvent += OnCounterVisualEvent;
+        if (iWasVisualObject != null)
+        {
+            iWasVisualCounter = iWasVisualObject.GetComponent<IWasVisualCounter>();
+            iWasVisualCounter.counterVisualEvent += OnCounterVisualEvent;
+        }
     }
 
     private void LateUpdate()
     {
-        FaceToCameraEvent?.Invoke(this,EventArgs.Empty);
+        FaceToCameraEvent?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnCounterVisualEvent(object sender, IWasVisualCounter.counterVisualEventClass e)
@@ -28,7 +31,7 @@ public class CounterVisual : MonoBehaviour
         fillImage.fillAmount = e.fillAmount;
         if (e.fillAmount != 0 && e.fillAmount != 1)
             Show();
-        else 
+        else
             Hide();
     }
 
