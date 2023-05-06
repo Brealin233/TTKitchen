@@ -26,6 +26,7 @@ public class FacetoCamera : MonoBehaviour
     {
         if (counterVisual != null)
         {
+            // todo: ReDesign generics method
             counterVisual.FaceToCameraEvent += OnFaceToCameraEvent;
         }
     }
