@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class CuttingBarFacetoCamera : MonoBehaviour
+public class FacetoCamera : MonoBehaviour
 {
     private enum FaceToCuttingProgressBar
     {
@@ -14,7 +14,7 @@ public class CuttingBarFacetoCamera : MonoBehaviour
     }
 
     private CounterVisual counterVisual;
-    
+
     [SerializeField] private FaceToCuttingProgressBar faceToCuttingProgressBar;
 
     private void Awake()
@@ -24,7 +24,10 @@ public class CuttingBarFacetoCamera : MonoBehaviour
 
     private void Start()
     {
-        counterVisual.FaceToCameraEvent += OnFaceToCameraEvent;
+        if (counterVisual != null)
+        {
+            counterVisual.FaceToCameraEvent += OnFaceToCameraEvent;
+        }
     }
 
     private void OnFaceToCameraEvent(object sender, EventArgs e)
@@ -35,7 +38,7 @@ public class CuttingBarFacetoCamera : MonoBehaviour
                 transform.LookAt(Camera.main.transform);
                 break;
             case FaceToCuttingProgressBar.LookAtInverted:
-                Vector3 dirFromCamera = transform.transform.position - Camera.main.transform.position; 
+                Vector3 dirFromCamera = transform.transform.position - Camera.main.transform.position;
                 transform.LookAt(transform.position + dirFromCamera);
                 break;
             case FaceToCuttingProgressBar.Forward:

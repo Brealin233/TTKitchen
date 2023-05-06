@@ -1,43 +1,53 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
-public class PlateKitchenObject : MonoBehaviour
+public class PlateKitchenObject : KitchenObject
 {
-    [SerializeField] private PlateCounter plateCounter;
-    [SerializeField] private Transform spawnPlatePoint;
-    [SerializeField] private GameObject platePrefab;
-
-    public List<GameObject> platesGameObjectsList;
+    public event EventHandler<ComplateVisualEvent> complateVisualEvent;
+    public class ComplateVisualEvent
+    {
+        public KitchenObjectSO kitchenObjectSO;
+    }
+    
+    [SerializeField] private List<KitchenObjectSO> vaildKitchenObjectSOList;
+    
+    private List<KitchenObjectSO> kitchenObjectSOList;
 
     private void Awake()
     {
-        platesGameObjectsList = new List<GameObject>();
+        kitchenObjectSOList = new List<KitchenObjectSO>();
     }
 
-    private void Start()
+    public bool TryAddIngredient(KitchenObjectSO kitchenObjectSO)
     {
-        plateCounter.spawnPlateEvent += OnSpawnPlateEvent;
-        plateCounter.removePlateEvent += OnRemovePlateEvent;
-    }
-
-    private void OnRemovePlateEvent(object sender, EventArgs e)
-    {
-        Transform plateTransform = platesGameObjectsList[^1].transform;
-        platesGameObjectsList.Remove(platesGameObjectsList[^1]);
-        Destroy(plateTransform.gameObject);
-    }
-
-    private void OnSpawnPlateEvent(object sender, EventArgs e)
-    {
-        GameObject plateGameObject = Instantiate(platePrefab, spawnPlatePoint);
+        if (!vaildKitchenObjectSOList.Contains(kitchenObjectSO))
+        {
+            return false;
+        }
         
-        plateCounter.kitchenObject = platePrefab.GetComponent<KitchenObject>();
-        
-        float spawnPlateTransform = .02f;
-        plateGameObject.transform.position = new Vector3(spawnPlatePoint.position.x, spawnPlatePoint.position.y + platesGameObjectsList.Count * spawnPlateTransform, spawnPlatePoint.position.z);
-        platesGameObjectsList.Add(plateGameObject);
+        if (kitchenObjectSOList.Contains(kitchenObjectSO))
+        {
+            // Prevent repeated joining
+            return false;
+        }
+        else
+        {
+            kitchenObjectSOList.Add(kitchenObjectSO);
+            
+            complateVisualEvent?.Invoke(this,new ComplateVisualEvent()
+            {
+                kitchenObjectSO =  kitchenObjectSO
+            });
+            
+            return true;
+        }
+    }
+
+    public List<KitchenObjectSO> GetKitchenObjectList()
+    {
+        return kitchenObjectSOList;
     }
 }
