@@ -9,6 +9,10 @@ public class DeliveryManager : MonoBehaviour
 {
     public static DeliveryManager Instance { get; private set; }
 
+    public event EventHandler deliverySpawnEvent;
+    public event EventHandler deliveryDisableEvent;
+    
+    
     [SerializeField] private RecipeListSO recipeList;
 
     private List<RecipeSO> waitingRecipeSOList;
@@ -38,7 +42,10 @@ public class DeliveryManager : MonoBehaviour
                 int randomRecipe = Random.Range(0, recipeList.RecipeListSOList.Count);
 
                 spawnRecipeCount++;
+                
                 waitingRecipeSOList.Add(recipeList.RecipeListSOList[randomRecipe]);
+                
+                deliverySpawnEvent?.Invoke(this,EventArgs.Empty);
             }
         }
     }
@@ -76,6 +83,9 @@ public class DeliveryManager : MonoBehaviour
                 {
                     Debug.Log("Correct Recipe Answer!");
                     waitingRecipeSOList.Remove(waitingRecipeSO);
+                    
+                    deliveryDisableEvent?.Invoke(this,EventArgs.Empty);
+                    
                     spawnRecipeCount--;
 
                     return;
@@ -84,5 +94,10 @@ public class DeliveryManager : MonoBehaviour
 
             Debug.Log("NO Match Found");
         }
+    }
+
+    public List<RecipeSO> GetWaitingRecipesList()
+    {
+        return waitingRecipeSOList;
     }
 }
