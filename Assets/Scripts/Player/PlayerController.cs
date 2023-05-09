@@ -7,7 +7,8 @@ using UnityEngine.Serialization;
 public class PlayerController : MonoBehaviour,IKitchenObjectParent
 {
     public static PlayerController Instance { get; private set; }
-    
+
+    public event EventHandler chopSoundEvent;
     public event EventHandler<BaseCounterSelectedEventArgs> BaseCounterSelectedEvent;
     public class BaseCounterSelectedEventArgs : EventArgs
     {
@@ -157,7 +158,7 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
     private void SetBaseCounter(BaseCounter baseCounterSelected)
     {
         this.baseCounterSelected = baseCounterSelected;
-
+        
         BaseCounterSelectedEvent?.Invoke(this, new BaseCounterSelectedEventArgs()
         {
             baseCounter = baseCounterSelected
@@ -171,6 +172,8 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
 
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
+        chopSoundEvent?.Invoke(this,EventArgs.Empty);
+
         this.kitchenObject = kitchenObject;
     }
 

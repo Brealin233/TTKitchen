@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ClearCounter : BaseCounter
 {
+    public static event EventHandler dropDownSoundEvent;
+    
     [SerializeField] private KitchenObjectSO initPrefab;
 
     public override void InteractPlayer(PlayerController playerController)
@@ -13,12 +15,9 @@ public class ClearCounter : BaseCounter
         {
             if (playerController.HasKitchenObject())
             {
+                dropDownSoundEvent?.Invoke(this,EventArgs.Empty);
                 playerController.GetKitchenObject().SetKitchenObjectParent(this);
                 playerController.ClearKitchenObject();
-            }
-            else
-            {
-                // counter nothing，player nothing
             }
         }
         else

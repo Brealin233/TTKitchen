@@ -18,7 +18,6 @@ public class DeliveryRecipeSingleUIManager : MonoBehaviour
 
         foreach (Transform child in iconContainer) Destroy(child);
         
-
         foreach (KitchenObjectSO kitchenObjectSO in recipeSO.recipeSOList)
         {
             Image iconImage = Instantiate(icon, iconContainer);
