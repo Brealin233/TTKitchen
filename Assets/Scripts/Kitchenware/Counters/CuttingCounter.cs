@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 
 public class CuttingCounter : BaseCounter,IWasVisualCounter
 {
+    public static event EventHandler cuttingsSoundEvent;
     public event EventHandler<IWasVisualCounter.counterVisualEventClass> counterVisualEvent;
 
     [SerializeField] private List<CuttingKitchenObjectSO> cuttingKitchenObjectSO;
@@ -20,6 +21,7 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
             {
                 if (HasRecipeKitchenObject(playerController.GetKitchenObject()))
                 {
+                    cuttingsSoundEvent?.Invoke(this,EventArgs.Empty);
                     cuttingCount = 0;
                     playerController.GetKitchenObject().SetKitchenObjectParent(this);
                     playerController.ClearKitchenObject();
@@ -62,6 +64,7 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
             {
                 if (!playerController.HasKitchenObject() && HasRecipeKitchenObject(GetKitchenObject()))
                 {
+                    cuttingsSoundEvent?.Invoke(this,EventArgs.Empty);
                     counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
                     {
                         fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())
@@ -71,6 +74,7 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
             else if(GetInputForOutputCuttingKitchenObject() && GetSliceKitchenObjectCountMax(GetKitchenObject()) == cuttingCount)
             {
                 DestroyKitchenObject(GetKitchenObject());
+                cuttingsSoundEvent?.Invoke(this,EventArgs.Empty);
                 counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
                 {
                     fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())

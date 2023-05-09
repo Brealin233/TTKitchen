@@ -11,6 +11,8 @@ public class DeliveryManager : MonoBehaviour
 
     public event EventHandler deliverySpawnEvent;
     public event EventHandler deliveryDisableEvent;
+    public event EventHandler deliverySuccessEvent;
+    public event EventHandler deliveryFaildEvent;
     
     
     [SerializeField] private RecipeListSO recipeList;
@@ -81,18 +83,18 @@ public class DeliveryManager : MonoBehaviour
 
                 if (matchRecipe)
                 {
-                    Debug.Log("Correct Recipe Answer!");
                     waitingRecipeSOList.Remove(waitingRecipeSO);
                     
                     deliveryDisableEvent?.Invoke(this,EventArgs.Empty);
-                    
+                    deliverySuccessEvent?.Invoke(this,EventArgs.Empty);
+
                     spawnRecipeCount--;
 
                     return;
                 }
             }
 
-            Debug.Log("NO Match Found");
+            deliveryFaildEvent?.Invoke(this,EventArgs.Empty);
         }
     }
 

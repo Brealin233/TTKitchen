@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class DeliveryRecipeUIManager : MonoBehaviour
@@ -39,7 +38,6 @@ public class DeliveryRecipeUIManager : MonoBehaviour
         foreach (RecipeSO recipeSO in DeliveryManager.Instance.GetWaitingRecipesList())
         {
             var recipe = Instantiate(deliveryRecipeTemplate, transform).GetComponent<DeliveryRecipeSingleUIManager>();
-            Debug.Log(recipeSO);
             recipe.SetRecipeIcon(recipeSO);
         }
     }

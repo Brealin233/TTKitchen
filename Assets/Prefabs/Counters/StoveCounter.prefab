@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2532287427743072591
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5166440348888869502}
+  - component: {fileID: 6542075930975606002}
+  m_Layer: 0
+  m_Name: Sound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5166440348888869502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2532287427743072591}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6238621171042242595}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6542075930975606002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2532287427743072591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f145e85e6c6114d6087c34a1cb6d32b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stoveCounter: {fileID: 9035825136794103118}
 --- !u!1001 &1315714493119676181
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -259,7 +304,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 750009112923229159, guid: 3997a9730ab08451daa362b116793641, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 750009112923229159, guid: 3997a9730ab08451daa362b116793641, type: 3}
       propertyPath: m_LocalPosition.x
@@ -321,6 +366,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 750009112923229159, guid: 3997a9730ab08451daa362b116793641, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1265823756544692020}
+    - targetCorrespondingSourceObject: {fileID: 750009112923229159, guid: 3997a9730ab08451daa362b116793641, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5166440348888869502}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8455757599737562142, guid: 3997a9730ab08451daa362b116793641, type: 3}
       insertIndex: -1
@@ -349,6 +397,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fadf97a42981f4cd593992fb285dbe37, type: 2}
   burnedObjectSOs:
   - {fileID: 11400000, guid: 6f5a33e3793b94e84a966e00cf52aec7, type: 2}
+  state: 0
 --- !u!4 &6238621171042242595 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 750009112923229159, guid: 3997a9730ab08451daa362b116793641, type: 3}
