@@ -24,6 +24,8 @@ public class DeliveryManager : MonoBehaviour
     private int spawnRecipeCount;
     private readonly int spawnRecipeCountMax = 4;
 
+    private int deliveredCount;
+
     private void Awake()
     {
         Instance = this;
@@ -83,6 +85,7 @@ public class DeliveryManager : MonoBehaviour
 
                 if (matchRecipe)
                 {
+                    deliveredCount++;
                     waitingRecipeSOList.Remove(waitingRecipeSO);
                     
                     deliveryDisableEvent?.Invoke(this,EventArgs.Empty);
@@ -101,5 +104,10 @@ public class DeliveryManager : MonoBehaviour
     public List<RecipeSO> GetWaitingRecipesList()
     {
         return waitingRecipeSOList;
+    }
+
+    public int GetDeliveredCount()
+    {
+        return deliveredCount;
     }
 }
