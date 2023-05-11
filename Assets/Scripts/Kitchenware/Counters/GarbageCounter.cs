@@ -4,6 +4,11 @@ using UnityEngine;
 public class GarbageCounter : BaseCounter
 {
     public static event EventHandler garbageSoundEvent;
+
+    public static void ResetStaticData()
+    {
+        garbageSoundEvent = null;
+    }
     
     public override void InteractPlayer(PlayerController playerController)
     {

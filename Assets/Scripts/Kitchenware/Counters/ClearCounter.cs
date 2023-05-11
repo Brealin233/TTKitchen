@@ -6,6 +6,10 @@ using UnityEngine;
 public class ClearCounter : BaseCounter
 {
     public static event EventHandler dropDownSoundEvent;
+    public static void ResetStaticData()
+    {
+        dropDownSoundEvent = null;
+    }
     
     [SerializeField] private KitchenObjectSO initPrefab;
 
