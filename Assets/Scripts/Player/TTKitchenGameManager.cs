@@ -8,6 +8,8 @@ public class TTKitchenGameManager : MonoBehaviour
 {
     public static TTKitchenGameManager Instance { get; private set; }
 
+    public event EventHandler gamePauseEvent;
+    public event EventHandler gameUnPauseEvent;
     public event EventHandler gameOverEvent;
     enum State
     {
@@ -23,6 +25,7 @@ public class TTKitchenGameManager : MonoBehaviour
     private float gameStartCountDownTimeMax = 3f;
     private float inGameTime;
     private float inGameTimeMax = 10f;
+    private bool isGamePause;
 
     private void Awake()
     {
@@ -43,32 +46,27 @@ public class TTKitchenGameManager : MonoBehaviour
         {
             case State.GameStart:
                 state = State.GameStartCountDown;
-                Debug.Log(state);
-
+                
                 break;
             case State.GameStartCountDown:
                 gameStartCountDownTime -= Time.deltaTime;
                 
-                Debug.Log(state);
-
                 if (gameStartCountDownTime < 0)
                 {
                     state = State.InGame;
-
+                    
+                    // todo: can`t do anything
                 }
                 break;
             case State.InGame:
                 inGameTime -= Time.deltaTime;
                 
-                Debug.Log(state);
-
                 if (inGameTime < 0)
                 {
                     state = State.GameOut;
                 }
                 break;
             case State.GameOut:
-                Debug.Log(state);
                 gameOverEvent?.Invoke(this,EventArgs.Empty);
                 break;
         }
@@ -92,5 +90,23 @@ public class TTKitchenGameManager : MonoBehaviour
     public float GetInGameTimeMax()
     {
         return inGameTimeMax;
+    }
+
+    public void SetGamePauseState()
+    {
+        isGamePause = !isGamePause;
+
+        if (isGamePause)
+        {
+            Time.timeScale = 0f;
+            
+            gamePauseEvent?.Invoke(this,EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            
+            gameUnPauseEvent?.Invoke(this,EventArgs.Empty);
+        }
     }
 }

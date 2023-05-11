@@ -7,6 +7,12 @@ using UnityEngine.Serialization;
 public class CuttingCounter : BaseCounter,IWasVisualCounter
 {
     public static event EventHandler cuttingsSoundEvent;
+
+    public static void ResetStaticData()
+    {
+        cuttingsSoundEvent = null;
+    }
+    
     public event EventHandler<IWasVisualCounter.counterVisualEventClass> counterVisualEvent;
 
     [SerializeField] private List<CuttingKitchenObjectSO> cuttingKitchenObjectSO;

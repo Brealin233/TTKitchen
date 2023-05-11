@@ -17,16 +17,31 @@ public class GameInputManager : MonoBehaviour
         inputManager = new InputManager();
         inputManager.Player.Enable();
 
-        inputManager.Player.Interact.performed += InteractOnPerFormed;
-        inputManager.Player.InteractAlternate.performed += InteractAlternateOnPerformed;
+        inputManager.Player.Interact.performed += InteractOnPerFormedEvent;
+        inputManager.Player.InteractAlternate.performed += InteractAlternateOnPerformedEvent;
+        inputManager.Player.Pause.performed += PauseOnPerformedEvent;
     }
 
-    private void InteractAlternateOnPerformed(InputAction.CallbackContext obj)
+    private void OnDestroy()
+    {
+        inputManager.Player.Interact.performed += InteractOnPerFormedEvent;
+        inputManager.Player.InteractAlternate.performed += InteractAlternateOnPerformedEvent;
+        inputManager.Player.Pause.performed += PauseOnPerformedEvent;
+        
+        inputManager.Dispose();
+    }
+
+    private void PauseOnPerformedEvent(InputAction.CallbackContext obj)
+    {
+        TTKitchenGameManager.Instance.SetGamePauseState();
+    }
+
+    private void InteractAlternateOnPerformedEvent(InputAction.CallbackContext obj)
     {
         inputInteractAlternateHandler?.Invoke(this, EventArgs.Empty);
     }
 
-    private void InteractOnPerFormed(InputAction.CallbackContext obj)
+    private void InteractOnPerFormedEvent(InputAction.CallbackContext obj)
     {
         inputInteractHandler?.Invoke(this, EventArgs.Empty);
     }

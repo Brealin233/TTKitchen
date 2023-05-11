@@ -6,7 +6,22 @@ using Random = UnityEngine.Random;
 
 public class SoundManager : MonoBehaviour
 {
+    public static SoundManager Instance { get; private set; }
+
+    public event EventHandler soundEffectEvent;
+    
     [SerializeField] private AudioClipRefsSO audioClipRefsSO;
+    private float volume;
+
+    private const string PLAYER_PREFS_SOUNDEFFECT_VOLOUME = "PLAYER_PREFS_SOUNDEFFECT_VOLOUME";
+
+    private void Awake()
+    {
+        Instance = this;
+
+        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_SOUNDEFFECT_VOLOUME, 1f);
+
+    }
 
     private void Start()
     {
@@ -18,6 +33,9 @@ public class SoundManager : MonoBehaviour
         GarbageCounter.garbageSoundEvent += OnGarbageSoundEvent;
         StoveFizzleSound.Instance.stoveFizzleSoundEvent += OnStoveFizzleSoundEvent;
         PlayerStepSound.playerStepSoundEvent += OnPlayerStepSoundEvent;
+        
+        soundEffectEvent?.Invoke(this,EventArgs.Empty);
+
     }
 
     private void OnPlayerStepSoundEvent(object sender, EventArgs e)
@@ -65,14 +83,32 @@ public class SoundManager : MonoBehaviour
         PlaySound(audioClipRefsSO.deliverySuccess,DeliveryManager.Instance.transform.position);
     }
 
-    private void PlaySound(List<AudioClip> audioClipList,Vector3 position,float volume = 1f)
+    private void PlaySound(List<AudioClip> audioClipList,Vector3 position,float volumeMultiple = 1f)
     {
         AudioSource.PlayClipAtPoint(audioClipList[Random.Range(0,audioClipList.Count)],position,volume);
     }
 
-    private void PlaySound(AudioClip audioClip, Vector3 position, float volume = 1f)
+    private void PlaySound(AudioClip audioClip, Vector3 position, float volumeMultiple = 1f)
     {
         AudioSource.PlayClipAtPoint(audioClip,position,volume);
+    }
+
+    public void PressSoundEffect()
+    {
+        volume += .1f;
+        if (volume > 1.01f)
+        {
+            volume = 0f;
+        }
+
+        PlayerPrefs.SetFloat(PLAYER_PREFS_SOUNDEFFECT_VOLOUME, volume);
+        PlayerPrefs.Save();
+        soundEffectEvent?.Invoke(this,EventArgs.Empty);
+    }
+
+    public float GetVolume()
+    {
+        return volume;
     }
 }
 
