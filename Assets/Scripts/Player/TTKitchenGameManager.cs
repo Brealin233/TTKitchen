@@ -8,6 +8,8 @@ public class TTKitchenGameManager : MonoBehaviour
 {
     public static TTKitchenGameManager Instance { get; private set; }
 
+    
+    public event EventHandler gameIntroduceEvent;
     public event EventHandler gamePauseEvent;
     public event EventHandler gameUnPauseEvent;
     public event EventHandler gameOverEvent;
@@ -26,6 +28,7 @@ public class TTKitchenGameManager : MonoBehaviour
     private float inGameTime;
     private float inGameTimeMax = 10f;
     private bool isGamePause;
+    private bool isGameStart;
 
     private void Awake()
     {
@@ -45,7 +48,8 @@ public class TTKitchenGameManager : MonoBehaviour
         switch (state)
         {
             case State.GameStart:
-                state = State.GameStartCountDown;
+                SetGameStartState();
+                gameIntroduceEvent?.Invoke(this,EventArgs.Empty);
                 
                 break;
             case State.GameStartCountDown:
@@ -92,6 +96,11 @@ public class TTKitchenGameManager : MonoBehaviour
         return inGameTimeMax;
     }
 
+    public void SetGameStartCountDownState()
+    {
+        state = State.GameStartCountDown;
+    }
+
     public void SetGamePauseState()
     {
         isGamePause = !isGamePause;
@@ -108,5 +117,24 @@ public class TTKitchenGameManager : MonoBehaviour
             
             gameUnPauseEvent?.Invoke(this,EventArgs.Empty);
         }
+    }
+    
+    public void SetGameStartState()
+    {
+        isGameStart = !isGameStart;
+
+        if (isGameStart)
+        {
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
+    }
+
+    public bool GetGameStart()
+    {
+        return isGameStart;
     }
 }

@@ -13,6 +13,9 @@ public class DeliveryManager : MonoBehaviour
     public event EventHandler deliveryDisableEvent;
     public event EventHandler deliverySuccessEvent;
     public event EventHandler deliveryFaildEvent;
+    public event EventHandler deliverySuccessBoardEvent;
+    public event EventHandler deliveryFailedBoardEvent;
+    public event EventHandler deliveryAnimEvent;
     
     
     [SerializeField] private RecipeListSO recipeList;
@@ -81,6 +84,7 @@ public class DeliveryManager : MonoBehaviour
                 if (!hasSameRecipe)
                 {
                     matchRecipe = false;
+                    
                 }
 
                 if (matchRecipe)
@@ -90,6 +94,10 @@ public class DeliveryManager : MonoBehaviour
                     
                     deliveryDisableEvent?.Invoke(this,EventArgs.Empty);
                     deliverySuccessEvent?.Invoke(this,EventArgs.Empty);
+                    deliverySuccessBoardEvent?.Invoke(this,EventArgs.Empty);
+                    deliveryAnimEvent?.Invoke(this,EventArgs.Empty);
+                    
+                    DeliveryStateUI.Instance.Show();
 
                     spawnRecipeCount--;
 
@@ -98,6 +106,11 @@ public class DeliveryManager : MonoBehaviour
             }
 
             deliveryFaildEvent?.Invoke(this,EventArgs.Empty);
+            deliveryFailedBoardEvent?.Invoke(this,EventArgs.Empty);
+            deliveryAnimEvent?.Invoke(this,EventArgs.Empty);
+
+            DeliveryStateUI.Instance.Show();
+
         }
     }
 

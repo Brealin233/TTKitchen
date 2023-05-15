@@ -41,7 +41,7 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
                 fryingTimeMax += Time.deltaTime;
 
                 fryingObjectSO = GetInputFryingObject();
-                
+
                 StoveFizzleSound.Instance.SetStoveSound();
 
                 counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
@@ -58,7 +58,7 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
                     {
                         state = state
                     });
-                    
+
                     state = State.Fried;
                     fryingTimeMax = 0f;
                 }
@@ -66,14 +66,14 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
                 break;
             case State.Fried:
                 burnedTimeMax += Time.deltaTime;
-                
+
                 burnedObjectSO = getInputBurnedObject();
 
                 counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
                 {
                     fillAmount = burnedTimeMax / burnedObjectSO.burnedTimerMax
                 });
-                
+
                 if (burnedTimeMax > burnedObjectSO.burnedTimerMax)
                 {
                     // todo: fried state can move anywhere and the statebar alive
@@ -88,7 +88,7 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
 
                     burnedTimeMax = 0f;
                 }
-                
+
                 StoveFizzleSound.Instance.SetStoveSound();
 
                 break;
@@ -191,12 +191,14 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
     {
         foreach (BurnedObjectSO burnedObject in burnedObjectSOs)
         {
-            // if (burnedObject.inputKitchenObject.GetKitchenObjectSO() == GetKitchenObject().GetKitchenObjectSO())
-            // {
             return burnedObject;
-            // }
         }
 
         return null;
+    }
+
+    public bool IsFried()
+    {
+        return state == State.Fried;
     }
 }

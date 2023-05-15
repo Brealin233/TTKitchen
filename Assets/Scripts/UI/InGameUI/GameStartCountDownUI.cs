@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class GameStartCountDownUI : MonoBehaviour
 {
+    public event EventHandler countDownEvent;
+    
     public TextMeshProUGUI gameStartCountDownText;
     
     private float gameStartTimeMax = 3f;
@@ -30,6 +32,8 @@ public class GameStartCountDownUI : MonoBehaviour
     private void Show()
     {
         gameStartCountDownText.gameObject.SetActive(true);
+        countDownEvent?.Invoke(this,EventArgs.Empty);
+
     }
 
     private void Hide()

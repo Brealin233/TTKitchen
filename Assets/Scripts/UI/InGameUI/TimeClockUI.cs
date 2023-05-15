@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class TimeClockUI : MonoBehaviour
 {
+    public static event EventHandler promptTextEvent;
+    public static void ResetStaticData()
+    {
+        promptTextEvent = null;
+    }
+    
     [SerializeField] private Transform fillClockBackGround;
     [SerializeField] private Transform fillClockPercent;
     
@@ -34,6 +40,8 @@ public class TimeClockUI : MonoBehaviour
     {
         fillClockBackGround.gameObject.SetActive(true);
         fillClockPercent.gameObject.SetActive(true);
+        
+        promptTextEvent?.Invoke(this,EventArgs.Empty);
     }
 
     private void Hide()

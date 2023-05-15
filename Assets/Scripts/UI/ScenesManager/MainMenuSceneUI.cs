@@ -18,6 +18,7 @@ public class MainMenuSceneUI : MonoBehaviour
         
         // todo: consider add main music
         
+        playGameButton.Select();
         exitGameButton.onClick.AddListener(Application.Quit);
 
         Time.timeScale = 1f;

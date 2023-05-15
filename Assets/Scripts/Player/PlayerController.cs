@@ -4,24 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour,IKitchenObjectParent
+public class PlayerController : MonoBehaviour, IKitchenObjectParent
 {
     public static PlayerController Instance { get; private set; }
 
     public event EventHandler chopSoundEvent;
     public event EventHandler<BaseCounterSelectedEventArgs> BaseCounterSelectedEvent;
+
     public class BaseCounterSelectedEventArgs : EventArgs
     {
         public BaseCounter baseCounter;
-    } 
+    }
 
     [SerializeField] private GameInputManager gameInputManager;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotateSpeed = 10f;
-    [FormerlySerializedAs("clearCounterLayerMask")] [SerializeField] private LayerMask baseCounterLayerMask;
+
+    [FormerlySerializedAs("clearCounterLayerMask")] [SerializeField]
+    private LayerMask baseCounterLayerMask;
+
     [SerializeField] private Transform kitchenObjectParentPoint;
-    
-    
+
+
     private BaseCounter baseCounterSelected;
     private KitchenObject kitchenObject;
     private Vector3 lastMoveDir;
@@ -45,13 +49,13 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
         gameInputManager.inputInteractHandler += OnInputInteractHandler;
         gameInputManager.inputInteractAlternateHandler += OninputInteractAlternateHandler;
     }
-    
+
     private void Update()
     {
         HandleMovement();
         HandleInteract();
     }
-    
+
     private void OninputInteractAlternateHandler(object sender, EventArgs e)
     {
         if (Physics.Raycast(transform.position, lastMoveDir, out RaycastHit raycastHit, RAY_DISTANCE,
@@ -66,6 +70,12 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
 
     private void OnInputInteractHandler(object sender, EventArgs e)
     {
+        if (TTKitchenGameManager.Instance.GetGameStart())
+        {
+            TTKitchenGameManager.Instance.SetGameStartState();
+            IntroduceUI.Instance.SetHide();
+        }
+
         Vector2 inputVector = gameInputManager.GetMovementVectorNormalized();
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
 
@@ -121,7 +131,8 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
         if (!canMove)
         {
             Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-            canMove = moveDirX.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
+            canMove = moveDirX.x != 0 && !Physics.CapsuleCast(transform.position,
+                transform.position + Vector3.up * PLAYER_HEIGHT,
                 MOVE_REDIUS, moveDirX, moveDistance);
 
             if (canMove)
@@ -131,7 +142,8 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
             else
             {
                 Vector3 moveDirZ = new Vector3(0, 0, moveDir.y).normalized;
-                canMove = moveDirZ.y != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
+                canMove = moveDirZ.y != 0 && !Physics.CapsuleCast(transform.position,
+                    transform.position + Vector3.up * PLAYER_HEIGHT,
                     MOVE_REDIUS, moveDirZ, moveDistance);
 
                 if (canMove)
@@ -158,7 +170,7 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
     private void SetBaseCounter(BaseCounter baseCounterSelected)
     {
         this.baseCounterSelected = baseCounterSelected;
-        
+
         BaseCounterSelectedEvent?.Invoke(this, new BaseCounterSelectedEventArgs()
         {
             baseCounter = baseCounterSelected
@@ -172,7 +184,7 @@ public class PlayerController : MonoBehaviour,IKitchenObjectParent
 
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
-        chopSoundEvent?.Invoke(this,EventArgs.Empty);
+        chopSoundEvent?.Invoke(this, EventArgs.Empty);
 
         this.kitchenObject = kitchenObject;
     }

@@ -10,5 +10,6 @@ public class ResetStaticData : MonoBehaviour
         CuttingCounter.ResetStaticData();
         GarbageCounter.ResetStaticData();
         ClearCounter.ResetStaticData();
+        TimeClockUI.ResetStaticData();
     }
 }
