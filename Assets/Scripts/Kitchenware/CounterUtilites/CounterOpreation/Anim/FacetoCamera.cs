@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
+[RequireComponent(typeof(CounterVisual))]
 public class FacetoCamera : MonoBehaviour
 {
     private enum FaceToCuttingProgressBar

@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 
 public class SoundManager : MonoBehaviour
 {
+    // todo: add default volume 
     public static SoundManager Instance { get; private set; }
 
     public event EventHandler soundEffectEvent;
