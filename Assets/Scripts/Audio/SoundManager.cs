@@ -28,7 +28,7 @@ public class SoundManager : MonoBehaviour
     {
         DeliveryManager.Instance.deliverySuccessEvent += OnDeliverySuccessEvent;
         DeliveryManager.Instance.deliveryFaildEvent += OnDeliveryFailedEvent;
-        PlayerController.Instance.chopSoundEvent += OnChopSoundEvent;
+        PlayerController.anyPlayerSoundEvent += OnChopSoundEvent;
         ClearCounter.dropDownSoundEvent += OnDropDownSoundEvent;
         CuttingCounter.cuttingsSoundEvent += OnCuttingsSoundEvent;
         GarbageCounter.garbageSoundEvent += OnGarbageSoundEvent;
@@ -71,7 +71,8 @@ public class SoundManager : MonoBehaviour
 
     private void OnChopSoundEvent(object sender, EventArgs e)
     {
-        PlaySound(audioClipRefsSO.objectPicked,PlayerController.Instance.transform.position);
+        PlayerController playerController = sender as PlayerController;
+        PlaySound(audioClipRefsSO.objectPicked, playerController.transform.position);
     }
 
     private void OnDeliveryFailedEvent(object sender, EventArgs e)

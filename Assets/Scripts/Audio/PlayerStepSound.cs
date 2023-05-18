@@ -18,8 +18,9 @@ public class PlayerStepSound : MonoBehaviour
         {
             stepTime = stepTimeMax;
 
-            if (PlayerController.Instance.IsWalking())
+            // if (PlayerController.Instance.IsWalking())
             {
+                // todo: solve it
                 playerStepSoundEvent?.Invoke(this,EventArgs.Empty);
             }
         }

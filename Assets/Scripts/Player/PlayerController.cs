@@ -1,13 +1,14 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour, IKitchenObjectParent
+public class PlayerController : NetworkBehaviour, IKitchenObjectParent
 {
-    public static PlayerController Instance { get; private set; }
+    public static PlayerController localInstance { get; private set; }
 
+    public static event EventHandler anyPlayerSpawnEvent;
+    public static event EventHandler anyPlayerSoundEvent;
     public event EventHandler chopSoundEvent;
     public event EventHandler<BaseCounterSelectedEventArgs> BaseCounterSelectedEvent;
 
@@ -16,7 +17,6 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
         public BaseCounter baseCounter;
     }
 
-    [SerializeField] private GameInputManager gameInputManager;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotateSpeed = 10f;
 
@@ -34,26 +34,31 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     private const float MOVE_REDIUS = .7f;
     private const float RAY_DISTANCE = 2f;
 
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Debug.Log("More than one player");
-        }
-
-        Instance = this;
-    }
-
     private void Start()
     {
-        gameInputManager.inputInteractHandler += OnInputInteractHandler;
-        gameInputManager.inputInteractAlternateHandler += OninputInteractAlternateHandler;
+        GameInputManager.Instance.inputInteractHandler += OnInputInteractHandler;
+        GameInputManager.Instance.inputInteractAlternateHandler += OninputInteractAlternateHandler;
     }
 
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         HandleMovement();
         HandleInteract();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            localInstance = this;
+        }
+
+        anyPlayerSpawnEvent?.Invoke(this, EventArgs.Empty);
     }
 
     private void OninputInteractAlternateHandler(object sender, EventArgs e)
@@ -68,6 +73,57 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
         }
     }
 
+    private void HandleMovementServerAuth()
+    {
+        Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
+        HandleMovementServerRpc(inputVector);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void HandleMovementServerRpc(Vector2 inputVector)
+    {
+        Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
+        isWalking = moveDir != Vector3.zero;
+
+        float moveDistance = moveSpeed * Time.deltaTime;
+
+        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
+            MOVE_REDIUS, moveDir, moveDistance);
+
+        if (!canMove)
+        {
+            Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
+            canMove = moveDirX.x != 0 && !Physics.CapsuleCast(transform.position,
+                transform.position + Vector3.up * PLAYER_HEIGHT,
+                MOVE_REDIUS, moveDirX, moveDistance);
+
+            if (canMove)
+            {
+                moveDir = moveDirX;
+            }
+            else
+            {
+                Vector3 moveDirZ = new Vector3(0, 0, moveDir.y).normalized;
+                canMove = moveDirZ.y != 0 && !Physics.CapsuleCast(transform.position,
+                    transform.position + Vector3.up * PLAYER_HEIGHT,
+                    MOVE_REDIUS, moveDirZ, moveDistance);
+
+                if (canMove)
+                {
+                    moveDir = moveDirZ;
+                }
+            }
+        }
+
+        if (canMove)
+        {
+            transform.position += moveDir * moveDistance;
+        }
+
+
+        transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
+    }
+
     private void OnInputInteractHandler(object sender, EventArgs e)
     {
         if (TTKitchenGameManager.Instance.GetGameStart())
@@ -76,7 +132,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
             IntroduceUI.Instance.SetHide();
         }
 
-        Vector2 inputVector = gameInputManager.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
 
         if (moveDir != Vector3.zero)
@@ -96,7 +152,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
     private void HandleInteract()
     {
-        Vector2 inputVector = gameInputManager.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
         isWalking = moveDir != Vector3.zero;
 
@@ -119,7 +175,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
     private void HandleMovement()
     {
-        Vector2 inputVector = gameInputManager.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
         isWalking = moveDir != Vector3.zero;
 
@@ -185,6 +241,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         chopSoundEvent?.Invoke(this, EventArgs.Empty);
+        anyPlayerSoundEvent?.Invoke(this, EventArgs.Empty);
 
         this.kitchenObject = kitchenObject;
     }
@@ -202,5 +259,11 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+    public static void ResetStaticData()
+    {
+        anyPlayerSpawnEvent = null;
+        anyPlayerSoundEvent = null;
     }
 }
