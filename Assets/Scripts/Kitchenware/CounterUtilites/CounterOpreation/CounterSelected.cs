@@ -11,7 +11,23 @@ public class CounterSelected : MonoBehaviour
 
     private void Start()
     {
-        PlayerController.Instance.BaseCounterSelectedEvent += InstanceOnBaseCounterSelectedEvent;
+        if (PlayerController.localInstance != null)
+        {
+            PlayerController.localInstance.BaseCounterSelectedEvent += InstanceOnBaseCounterSelectedEvent;
+        }
+        else
+        {
+            PlayerController.anyPlayerSpawnEvent += OnAnyPlayerSpawnEvent;
+        }
+    }
+
+    private void OnAnyPlayerSpawnEvent(object sender, EventArgs e)
+    {
+        if (PlayerController.localInstance != null)
+        {
+            PlayerController.localInstance.BaseCounterSelectedEvent -= InstanceOnBaseCounterSelectedEvent;
+            PlayerController.localInstance.BaseCounterSelectedEvent += InstanceOnBaseCounterSelectedEvent;
+        }
     }
 
     private void InstanceOnBaseCounterSelectedEvent(object sender, PlayerController.BaseCounterSelectedEventArgs e)

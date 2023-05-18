@@ -11,5 +11,6 @@ public class ResetStaticData : MonoBehaviour
         GarbageCounter.ResetStaticData();
         ClearCounter.ResetStaticData();
         TimeClockUI.ResetStaticData();
+        PlayerController.ResetStaticData();
     }
 }

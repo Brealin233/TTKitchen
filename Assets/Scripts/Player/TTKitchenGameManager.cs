@@ -26,7 +26,7 @@ public class TTKitchenGameManager : MonoBehaviour
     private float gameStartCountDownTime;
     private float gameStartCountDownTimeMax = 3f;
     private float inGameTime;
-    private float inGameTimeMax = 10f;
+    private float inGameTimeMax = 300f;
     private bool isGamePause;
     private bool isGameStart;
 
@@ -50,7 +50,6 @@ public class TTKitchenGameManager : MonoBehaviour
             case State.GameStart:
                 SetGameStartState();
                 gameIntroduceEvent?.Invoke(this,EventArgs.Empty);
-                
                 break;
             case State.GameStartCountDown:
                 gameStartCountDownTime -= Time.deltaTime;
