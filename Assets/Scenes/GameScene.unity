@@ -2867,6 +2867,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5628149881604458689, guid: 5268b6b73415541e1be386c75bdaa3b8, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4014881796
+      objectReference: {fileID: 0}
     - target: {fileID: 9196432905801364211, guid: 5268b6b73415541e1be386c75bdaa3b8, type: 3}
       propertyPath: m_Name
       value: ContainerCounterTomato
@@ -4681,6 +4685,10 @@ PrefabInstance:
     - target: {fileID: 6887579415491335123, guid: 63601ee8f70c743eaab90b68fa024644, type: 3}
       propertyPath: m_Name
       value: ContainerCounterMeatUncooked
+      objectReference: {fileID: 0}
+    - target: {fileID: 7939537746183809505, guid: 63601ee8f70c743eaab90b68fa024644, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 193969310
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9209,7 +9217,62 @@ MonoBehaviour:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1374106419}
     PlayerPrefab: {fileID: 8962075118212303342, guid: fd86265fe0b5248b6bd6c8d951044941, type: 3}
-    NetworkPrefabs: []
+    NetworkPrefabs:
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: 3bf2647fb1df740dd9a26a123624fdc7, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: 9bc3e80a405ce44eb9d993197f4ef973, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: 933b1c0fd68e546da89ef1582c06b9b7, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 6111215737496473349, guid: fcc474efee1024a3593015b4636d01e2, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 6111215737496473349, guid: a608688eb269548a0b82b283a5d22333, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 6111215737496473349, guid: c295bb2e65cbb4424833e9ecd98e2534, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: 652b980cd5986410a8ab7e311b1b5855, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: dbf9681108d2a4694affc2698ccb80e4, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: 9a1bb93f2d3ea46b59979913a40c930c, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8247187331034231052, guid: c0dc05e5dcc0d4632bb730e3f5efe500, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 6111215737496473349, guid: 2aca270245c6540f9b80a7125c76f498, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -9771,6 +9834,10 @@ PrefabInstance:
       propertyPath: initPrefab
       value: 
       objectReference: {fileID: 11400000, guid: 6f5beaf1e0a454668bbfdd31834667eb, type: 2}
+    - target: {fileID: 2783369093490995734, guid: 02ce34f899ea147b18be4f4b7090fecc, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2300200103
+      objectReference: {fileID: 0}
     - target: {fileID: 7506251408288925661, guid: 02ce34f899ea147b18be4f4b7090fecc, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -10790,6 +10857,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ContainerCounterCabbage
       objectReference: {fileID: 0}
+    - target: {fileID: 3151095304953305494, guid: 5c49af92a89bc46c7b45f6924be5e98c, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4220693366
+      objectReference: {fileID: 0}
     - target: {fileID: 7291887376469994589, guid: 5c49af92a89bc46c7b45f6924be5e98c, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -11136,6 +11207,10 @@ PrefabInstance:
     - target: {fileID: 385089184499050993, guid: 91db01b1a73f14ceb8e8ff11ceef645f, type: 3}
       propertyPath: m_Name
       value: ContainerCounterBread
+      objectReference: {fileID: 0}
+    - target: {fileID: 3810999583343449027, guid: 91db01b1a73f14ceb8e8ff11ceef645f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 251680378
       objectReference: {fileID: 0}
     - target: {fileID: 8820422460212749832, guid: 91db01b1a73f14ceb8e8ff11ceef645f, type: 3}
       propertyPath: m_RootOrder
@@ -11938,6 +12013,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1961610704}
   m_CullTransparentMesh: 1
+--- !u!1 &1970620508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1970620510}
+  - component: {fileID: 1970620509}
+  - component: {fileID: 1970620511}
+  m_Layer: 0
+  m_Name: SpawnKitchenNetworkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1970620509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970620508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efcfa8ea3529a48c49febc0748eb6d63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentKitchenObjectSOList: {fileID: 11400000, guid: aa9d922c432f84aac97dbf96ff48b280, type: 2}
+--- !u!4 &1970620510
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970620508}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1970620511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970620508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3448909968
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!4 &1977813234 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 352411618384052937, guid: b888af48bba994678a6b66f432480543, type: 3}

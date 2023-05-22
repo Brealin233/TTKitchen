@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5742955524507448754}
   - component: {fileID: 5354167683050830193}
+  - component: {fileID: 1885625066672870101}
+  - component: {fileID: -6015407090403065862}
   m_Layer: 0
-  m_Name: Cheese_Slice
+  m_Name: Tomato_Slice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6461744912761084123}
+  - {fileID: 5970627581354863771}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -45,8 +47,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af43ddb32967e42fda9091a4ea57d4c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kitchenObjectSO: {fileID: 11400000, guid: 217057816958c45259c2986e2ca81a2e, type: 2}
---- !u!1001 &7874180869801856603
+  kitchenObjectSO: {fileID: 11400000, guid: 01c617ef5df5644249132493f02530d2, type: 2}
+--- !u!114 &1885625066672870101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111215737496473349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &-6015407090403065862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111215737496473349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6345775ed4adf419d9a6ebfbb96ee14b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &7363914452526627355
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -54,61 +84,61 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5742955524507448754}
     m_Modifications:
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3812876574508226177, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
+    - target: {fileID: 3812876574508226177, guid: fb403d1efda6baf4190c507841617408, type: 3}
       propertyPath: m_Name
-      value: CheeseSlices_Visual
+      value: TomatoSlices_Visual
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
---- !u!4 &6461744912761084123 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: fb403d1efda6baf4190c507841617408, type: 3}
+--- !u!4 &5970627581354863771 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 3812876574508226176, guid: 17cb28a1a37fd7f44ae6e1ad2aa9da78, type: 3}
-  m_PrefabInstance: {fileID: 7874180869801856603}
+  m_CorrespondingSourceObject: {fileID: 3812876574508226176, guid: fb403d1efda6baf4190c507841617408, type: 3}
+  m_PrefabInstance: {fileID: 7363914452526627355}
   m_PrefabAsset: {fileID: 0}

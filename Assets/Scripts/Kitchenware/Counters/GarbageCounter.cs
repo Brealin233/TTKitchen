@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class GarbageCounter : BaseCounter
@@ -14,8 +15,21 @@ public class GarbageCounter : BaseCounter
     {
         if (!HasKitchenObject() && playerController.HasKitchenObject())
         {
-            garbageSoundEvent?.Invoke(this,EventArgs.Empty);
-            DestroyKitchenObject(playerController.GetKitchenObject());
+            KitchenObject.DestoryKitchenObject(playerController.GetKitchenObject());
+
+            InteractPlayerServerRpc();
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractPlayerServerRpc()
+    {
+        InteractPlayerClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractPlayerClientRpc()
+    {
+        garbageSoundEvent?.Invoke(this,EventArgs.Empty);
     }
 }

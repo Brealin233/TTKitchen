@@ -261,6 +261,11 @@ public class PlayerController : NetworkBehaviour, IKitchenObjectParent
         return kitchenObject != null;
     }
 
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
+
     public static void ResetStaticData()
     {
         anyPlayerSpawnEvent = null;

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BaseCounter : MonoBehaviour,IKitchenObjectParent
+public class BaseCounter : NetworkBehaviour, IKitchenObjectParent
 {
     [SerializeField] private Transform counterTopPoint;
 
@@ -41,6 +42,11 @@ public class BaseCounter : MonoBehaviour,IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
 
     protected void DestroyKitchenObject(KitchenObject kitchenObject)
