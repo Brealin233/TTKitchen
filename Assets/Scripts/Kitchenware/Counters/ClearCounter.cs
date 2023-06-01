@@ -20,6 +20,8 @@ public class ClearCounter : BaseCounter
             if (playerController.HasKitchenObject())
             {
                 dropDownSoundEvent?.Invoke(this,EventArgs.Empty);
+                
+                //KitchenObject.SpawnKitchenObject(playerController.GetKitchenObject().GetKitchenObjectSO(),this);
                 playerController.GetKitchenObject().SetKitchenObjectParent(this);
                 playerController.ClearKitchenObject();
             }
@@ -32,7 +34,7 @@ public class ClearCounter : BaseCounter
                 {
                     if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
                     {
-                        DestroyKitchenObject(GetKitchenObject());
+                        KitchenObject.DestoryKitchenObject(GetKitchenObject());
                     }
                 }
                 else
@@ -41,7 +43,7 @@ public class ClearCounter : BaseCounter
                     {
                         if (plateKitchenObject.TryAddIngredient(playerController.GetKitchenObject().GetKitchenObjectSO()))
                         {
-                            DestroyKitchenObject(playerController.GetKitchenObject());
+                            KitchenObject.DestoryKitchenObject(playerController.GetKitchenObject());
                         }
                     }
                 }

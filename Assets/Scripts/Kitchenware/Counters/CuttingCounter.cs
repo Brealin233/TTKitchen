@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class CuttingCounter : BaseCounter,IWasVisualCounter
+public class CuttingCounter : BaseCounter, IWasVisualCounter
 {
     public static event EventHandler cuttingsSoundEvent;
 
@@ -12,12 +13,13 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
     {
         cuttingsSoundEvent = null;
     }
-    
+
     public event EventHandler<IWasVisualCounter.counterVisualEventClass> counterVisualEvent;
 
     [SerializeField] private List<CuttingKitchenObjectSO> cuttingKitchenObjectSO;
 
     private float cuttingCount;
+    private KitchenObject kitchenObject;
 
     public override void InteractPlayer(PlayerController playerController)
     {
@@ -27,10 +29,11 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
             {
                 if (HasRecipeKitchenObject(playerController.GetKitchenObject()))
                 {
-                    cuttingsSoundEvent?.Invoke(this,EventArgs.Empty);
-                    cuttingCount = 0;
-                    playerController.GetKitchenObject().SetKitchenObjectParent(this);
-                    playerController.ClearKitchenObject();
+                    kitchenObject = playerController.GetKitchenObject();
+
+                    kitchenObject.SetKitchenObjectParent(this);
+
+                    InteractServerRpc();
                 }
             }
         }
@@ -38,11 +41,12 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
         {
             if (playerController.HasKitchenObject())
             {
-                if (playerController.GetKitchenObject().GetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
+                if (playerController.GetKitchenObject()
+                    .GetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
                 {
                     if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
                     {
-                        DestroyKitchenObject(GetKitchenObject());
+                        KitchenObject.DestoryKitchenObject(GetKitchenObject());
                     }
                 }
             }
@@ -51,11 +55,11 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
                 // todo: currently can move kitchenobject in UnSlice complete, and anim done with
 
                 GetKitchenObject().SetKitchenObjectParent(playerController);
-                counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
+                ClearKitchenObjectServerRpc();
+                counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass
                 {
                     fillAmount = 0f
                 });
-                ClearKitchenObject();
             }
         }
     }
@@ -64,29 +68,79 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
     {
         if (HasKitchenObject())
         {
-            cuttingCount++;
+            InteractAlternateServerRpc(playerController.NetworkObject);
+            CuttingInteractAlternateServerRpc();
+        }
+    }
 
-            if (GetSliceKitchenObjectCountMax(GetKitchenObject()) != cuttingCount)
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractClientRpc()
+    {
+        cuttingCount = 0;
+        cuttingsSoundEvent?.Invoke(this, EventArgs.Empty);
+
+        counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass
+        {
+            fillAmount = 0
+        });
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ClearKitchenObjectServerRpc()
+    {
+        ClearKitchenObjectClientRpc();
+    }
+
+    [ClientRpc]
+    private void ClearKitchenObjectClientRpc()
+    {
+        ClearKitchenObject();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractAlternateServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        InteractAlternateClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    private void InteractAlternateClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        var playerController = networkObject.GetComponent<IKitchenObjectParent>();
+
+        cuttingCount++;
+
+        if (HasRecipeKitchenObject(GetKitchenObject()))
+        {
+            cuttingsSoundEvent?.Invoke(this, EventArgs.Empty);
+            counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass
             {
-                if (!playerController.HasKitchenObject() && HasRecipeKitchenObject(GetKitchenObject()))
-                {
-                    cuttingsSoundEvent?.Invoke(this,EventArgs.Empty);
-                    counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
-                    {
-                        fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())
-                    });
-                }
-            }
-            else if(GetInputForOutputCuttingKitchenObject() && GetSliceKitchenObjectCountMax(GetKitchenObject()) == cuttingCount)
-            {
-                DestroyKitchenObject(GetKitchenObject());
-                cuttingsSoundEvent?.Invoke(this,EventArgs.Empty);
-                counterVisualEvent?.Invoke(this,new IWasVisualCounter.counterVisualEventClass
-                {
-                    fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())
-                });
-                KitchenObject.SpawnKitchenObject(GetInputForOutputCuttingKitchenObject().GetKitchenObjectSO(), this);
-            }
+                fillAmount = cuttingCount / GetSliceKitchenObjectCountMax(GetKitchenObject())
+            });
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void CuttingInteractAlternateServerRpc()
+    {
+        if (GetInputForOutputCuttingKitchenObject(GetKitchenObject()) &&
+            GetSliceKitchenObjectCountMax(GetKitchenObject()) == cuttingCount)
+        {
+            cuttingsSoundEvent?.Invoke(this, EventArgs.Empty);
+
+            var outputKitchenObject = GetInputForOutputCuttingKitchenObject(GetKitchenObject()); 
+            
+            KitchenObject.DestoryKitchenObject(GetKitchenObject());
+
+            KitchenObject.SpawnKitchenObject(outputKitchenObject.GetKitchenObjectSO(),
+                this);
         }
     }
 
@@ -116,11 +170,11 @@ public class CuttingCounter : BaseCounter,IWasVisualCounter
         return false;
     }
 
-    private KitchenObject GetInputForOutputCuttingKitchenObject()
+    private KitchenObject GetInputForOutputCuttingKitchenObject(KitchenObject kitchenObject)
     {
         foreach (CuttingKitchenObjectSO kitchenObjectSO in cuttingKitchenObjectSO)
         {
-            if (kitchenObjectSO.inputKitchenObject.GetKitchenObjectSO() == GetKitchenObject().GetKitchenObjectSO())
+            if (kitchenObjectSO.inputKitchenObject.GetKitchenObjectSO() == kitchenObject.GetKitchenObjectSO())
             {
                 return kitchenObjectSO.outputKitchenObject;
             }

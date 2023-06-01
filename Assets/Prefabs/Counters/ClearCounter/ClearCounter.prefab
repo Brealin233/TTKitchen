@@ -318,7 +318,7 @@ PrefabInstance:
       addedObject: {fileID: 2137364009115689162}
     - targetCorrespondingSourceObject: {fileID: 8455757599737562142, guid: 3997a9730ab08451daa362b116793641, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -7659356393809621962}
+      addedObject: {fileID: -1685740789065726427}
   m_SourcePrefab: {fileID: 100100000, guid: 3997a9730ab08451daa362b116793641, type: 3}
 --- !u!1 &3188955619466086354 stripped
 GameObject:
@@ -340,7 +340,7 @@ MonoBehaviour:
   counterTopPoint: {fileID: 8339456416289167225}
   kitchenObject: {fileID: 0}
   initPrefab: {fileID: 0}
---- !u!114 &-7659356393809621962
+--- !u!114 &-1685740789065726427
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

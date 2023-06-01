@@ -27,6 +27,6 @@ public class StoveFizzleSound : MonoBehaviour
 
     private bool GetStoveSoundState()
     {
-        return stoveCounter.state == StoveCounter.State.Cooking || stoveCounter.state == StoveCounter.State.Fried;
+        return stoveCounter.state.Value == StoveCounter.State.Cooking || stoveCounter.state.Value == StoveCounter.State.Fried;
     }
 }

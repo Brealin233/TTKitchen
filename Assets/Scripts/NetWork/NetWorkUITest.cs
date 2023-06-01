@@ -17,14 +17,14 @@ public class NetWorkUITest : MonoBehaviour
         startHostButton.onClick.AddListener(() =>
         {
             Debug.Log("HOST");
-            NetworkManager.Singleton.StartHost();
+            MultipleKitchenObejctNetwork.Instance.StartHost();
             Hide();
         });
         
         startClientButton.onClick.AddListener(() =>
         {
             Debug.Log("CLIENT");
-            NetworkManager.Singleton.StartClient();
+            MultipleKitchenObejctNetwork.Instance.StartClient();
             Hide();
         });
     }

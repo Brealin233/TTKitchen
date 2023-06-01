@@ -25,9 +25,10 @@ public class IntroduceUI : MonoBehaviour
 
     private void Start()
     {
-        Hide();
+        Show();
         
         TTKitchenGameManager.Instance.gameIntroduceEvent += OnGameIntroduceEvent;
+        TTKitchenGameManager.Instance.changeLocalPlayerReadyEvent += OnChangeLocalPlayerReadyEvent;
 
         moveUpText.text = GameInputManager.Instance.GetBindingsText(GameInputManager.Bindings.Move_UP);
         moveDownText.text = GameInputManager.Instance.GetBindingsText(GameInputManager.Bindings.Move_Down);
@@ -38,11 +39,17 @@ public class IntroduceUI : MonoBehaviour
         pauseText.text = GameInputManager.Instance.GetBindingsText(GameInputManager.Bindings.pause);
     }
 
+    private void OnChangeLocalPlayerReadyEvent(object sender, EventArgs e)
+    {
+        if (TTKitchenGameManager.Instance.GetLocalPlayerReady())
+        {
+            Hide();
+        }
+    }
+
     private void OnGameIntroduceEvent(object sender, EventArgs e)
     {
         Show();
-        
-        TTKitchenGameManager.Instance.SetGameStartCountDownState();
     }
 
     private void Show()
@@ -59,10 +66,5 @@ public class IntroduceUI : MonoBehaviour
         {
             child.gameObject.SetActive(false);
         }
-    }
-
-    public void SetHide()
-    {
-        Hide();
     }
 }

@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerController : NetworkBehaviour, IKitchenObjectParent
 {
@@ -19,9 +19,10 @@ public class PlayerController : NetworkBehaviour, IKitchenObjectParent
 
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotateSpeed = 10f;
+    [SerializeField] private List<Vector3> spawnPositionList;
 
-    [FormerlySerializedAs("clearCounterLayerMask")] [SerializeField]
-    private LayerMask baseCounterLayerMask;
+    [SerializeField] private LayerMask baseCounterLayerMask;
+    [SerializeField] private LayerMask playerCollisionLayerMask;
 
     [SerializeField] private Transform kitchenObjectParentPoint;
 
@@ -58,7 +59,21 @@ public class PlayerController : NetworkBehaviour, IKitchenObjectParent
             localInstance = this;
         }
 
+        transform.position = spawnPositionList[(int)OwnerClientId];
         anyPlayerSpawnEvent?.Invoke(this, EventArgs.Empty);
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+        }
+    }
+
+    private void OnClientDisconnectCallback(ulong clientID)
+    {
+        if (clientID == OwnerClientId && HasKitchenObject())
+        {
+            KitchenObject.DestoryKitchenObject(GetKitchenObject());
+        }
     }
 
     private void OninputInteractAlternateHandler(object sender, EventArgs e)
@@ -73,65 +88,8 @@ public class PlayerController : NetworkBehaviour, IKitchenObjectParent
         }
     }
 
-    private void HandleMovementServerAuth()
-    {
-        Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
-        HandleMovementServerRpc(inputVector);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void HandleMovementServerRpc(Vector2 inputVector)
-    {
-        Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
-        isWalking = moveDir != Vector3.zero;
-
-        float moveDistance = moveSpeed * Time.deltaTime;
-
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * PLAYER_HEIGHT,
-            MOVE_REDIUS, moveDir, moveDistance);
-
-        if (!canMove)
-        {
-            Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-            canMove = moveDirX.x != 0 && !Physics.CapsuleCast(transform.position,
-                transform.position + Vector3.up * PLAYER_HEIGHT,
-                MOVE_REDIUS, moveDirX, moveDistance);
-
-            if (canMove)
-            {
-                moveDir = moveDirX;
-            }
-            else
-            {
-                Vector3 moveDirZ = new Vector3(0, 0, moveDir.y).normalized;
-                canMove = moveDirZ.y != 0 && !Physics.CapsuleCast(transform.position,
-                    transform.position + Vector3.up * PLAYER_HEIGHT,
-                    MOVE_REDIUS, moveDirZ, moveDistance);
-
-                if (canMove)
-                {
-                    moveDir = moveDirZ;
-                }
-            }
-        }
-
-        if (canMove)
-        {
-            transform.position += moveDir * moveDistance;
-        }
-
-
-        transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
-    }
-
     private void OnInputInteractHandler(object sender, EventArgs e)
     {
-        if (TTKitchenGameManager.Instance.GetGameStart())
-        {
-            TTKitchenGameManager.Instance.SetGameStartState();
-            IntroduceUI.Instance.SetHide();
-        }
-
         Vector2 inputVector = GameInputManager.Instance.GetMovementVectorNormalized();
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
 

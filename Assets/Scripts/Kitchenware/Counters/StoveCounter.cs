@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 
 public class StoveCounter : BaseCounter, IWasVisualCounter
@@ -27,76 +28,103 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
     private FryingObjectSO fryingObjectSO;
     private BurnedObjectSO burnedObjectSO;
 
-    public State state;
-    private float fryingTimeMax;
-    private float burnedTimeMax;
+    public NetworkVariable<State> state = new NetworkVariable<State>(State.Idle);
+    private NetworkVariable<float> fryingTime = new (0f);
+    private NetworkVariable<float> burnedTime = new NetworkVariable<float>(0f);
+    
+    public override void OnNetworkSpawn()
+    {
+        fryingTime.OnValueChanged += FryingTimeOnValueChanged;
+        burnedTime.OnValueChanged += burnedTimeOnValueChanged;
+        state.OnValueChanged += StateOnValueChanged;
+    }
+
+    private void StateOnValueChanged(State previousValue, State newValue)
+    {
+        if (state.Value == State.Idle || state.Value == State.Burned)
+        {
+            counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
+            {
+                fillAmount = 0
+            });
+        }
+        
+        stoveCounterVisualEvent?.Invoke(this, new StoveCounterVisualEvent
+        {
+            state = state.Value
+        });
+    }
+
+    private void burnedTimeOnValueChanged(float previousValue, float newValue)
+    {
+        var burnedTimer = burnedObjectSO != null ? burnedObjectSO.burnedTimerMax : 1f;
+        
+        counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
+        {
+            fillAmount = burnedTime.Value / burnedTimer
+        });
+    }
+
+    private void FryingTimeOnValueChanged(float previousValue, float newValue)
+    {
+        var fryingTimer = fryingObjectSO != null ? fryingObjectSO.fryingTimerMax : 1f;
+        
+        counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
+        {
+            fillAmount = fryingTime.Value / fryingTimer
+        });
+    }
 
     private void Update()
     {
-        switch (state)
+        if (!IsServer)
+        {
+            return;
+        }
+        
+        switch (state.Value)
         {
             case State.Idle:
                 break;
             case State.Cooking:
-                fryingTimeMax += Time.deltaTime;
+                fryingTime.Value += Time.deltaTime;
 
-                fryingObjectSO = GetInputFryingObject();
+                fryingObjectSO = GetInputFryingObject(GetKitchenObject().GetKitchenObjectSO());
 
                 StoveFizzleSound.Instance.SetStoveSound();
 
-                counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
+                if (fryingTime.Value > fryingObjectSO.fryingTimerMax)
                 {
-                    fillAmount = fryingTimeMax / fryingObjectSO.fryingTimerMax
-                });
-
-                if (fryingTimeMax > fryingObjectSO.fryingTimerMax)
-                {
-                    DestroyKitchenObject(GetKitchenObject());
+                    // DestroyKitchenObject(GetKitchenObject());
+                    KitchenObject.DestoryKitchenObject(GetKitchenObject());
 
                     KitchenObject.SpawnKitchenObject(fryingObjectSO.outputKitchenObject.GetKitchenObjectSO(), this);
-                    stoveCounterVisualEvent?.Invoke(this, new StoveCounterVisualEvent
-                    {
-                        state = state
-                    });
 
-                    state = State.Fried;
-                    fryingTimeMax = 0f;
+                    state.Value = State.Fried;
                 }
 
                 break;
             case State.Fried:
-                burnedTimeMax += Time.deltaTime;
+                burnedTime.Value += Time.deltaTime;
 
-                burnedObjectSO = getInputBurnedObject();
-
-                counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
-                {
-                    fillAmount = burnedTimeMax / burnedObjectSO.burnedTimerMax
-                });
-
-                if (burnedTimeMax > burnedObjectSO.burnedTimerMax)
+                burnedObjectSO = GetInputBurnedObject();
+                
+                if (burnedTime.Value > burnedObjectSO.burnedTimerMax)
                 {
                     // todo: fried state can move anywhere and the statebar alive
-                    state = State.Burned;
-                    DestroyKitchenObject(GetKitchenObject());
-
+                    state.Value = State.Burned;
+                    // DestroyKitchenObject(GetKitchenObject());
+                    KitchenObject.DestoryKitchenObject(GetKitchenObject());
+                    
                     KitchenObject.SpawnKitchenObject(burnedObjectSO.outputKitchenObject.GetKitchenObjectSO(), this);
-                    stoveCounterVisualEvent?.Invoke(this, new StoveCounterVisualEvent
-                    {
-                        state = state
-                    });
-
-                    burnedTimeMax = 0f;
+                    
+                    burnedTime.Value = 0f;
                 }
 
                 StoveFizzleSound.Instance.SetStoveSound();
 
                 break;
             case State.Burned:
-                counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
-                {
-                    fillAmount = 0
-                });
                 break;
         }
     }
@@ -109,14 +137,10 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
             {
                 if (HasRecipeKitchenObject(playerController.GetKitchenObject()))
                 {
-                    playerController.GetKitchenObject().SetKitchenObjectParent(this);
-                    playerController.ClearKitchenObject();
+                    KitchenObject kitchenObject = playerController.GetKitchenObject();
+                    kitchenObject.SetKitchenObjectParent(this);
 
-                    state = State.Cooking;
-                    stoveCounterVisualEvent?.Invoke(this, new StoveCounterVisualEvent
-                    {
-                        state = state
-                    });
+                    InteractPlayerServerRpc(MultipleKitchenObejctNetwork.Instance.GetKitchenObjectSOIndexInList(kitchenObject.GetKitchenObjectSO()));
                 }
             }
         }
@@ -129,36 +153,48 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
                 {
                     if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
                     {
-                        state = State.Idle;
-                        stoveCounterVisualEvent?.Invoke(this, new StoveCounterVisualEvent
-                        {
-                            state = state
-                        });
-                        counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
-                        {
-                            fillAmount = 0
-                        });
-
-                        DestroyKitchenObject(GetKitchenObject());
+                        state.Value = State.Idle;
+                        
+                        KitchenObject.DestoryKitchenObject(GetKitchenObject());
                     }
                 }
             }
             else
             {
-                GetKitchenObject().SetKitchenObjectParent(playerController);
-                ClearKitchenObject();
-
-                state = State.Idle;
-                stoveCounterVisualEvent?.Invoke(this, new StoveCounterVisualEvent
-                {
-                    state = state
-                });
-                counterVisualEvent?.Invoke(this, new IWasVisualCounter.counterVisualEventClass()
-                {
-                    fillAmount = 0
-                });
+                KitchenObject kitchenObject = GetKitchenObject();
+                kitchenObject.SetKitchenObjectParent(playerController);
+                
+                SetMeetParentServerRpc();
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetMeetParentServerRpc()
+    {
+        state.Value = State.Idle;
+        SetMeetParentClientRpc();
+    }
+
+    [ClientRpc]
+    private void SetMeetParentClientRpc()
+    {
+        ClearKitchenObject();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractPlayerServerRpc(int kitchenIndex)
+    {
+        fryingTime.Value = 0f;
+        state.Value = State.Cooking;
+        InteractPlayerClientRpc(kitchenIndex);
+    }
+
+    [ClientRpc]
+    private void InteractPlayerClientRpc(int kitchenIndex)
+    {
+       fryingObjectSO = GetInputFryingObject(MultipleKitchenObejctNetwork.Instance.GetKitchenObjectSOFromIndex(kitchenIndex));
+       burnedObjectSO = GetInputBurnedObject();
     }
 
     private bool HasRecipeKitchenObject(KitchenObject kitchenObject)
@@ -174,11 +210,11 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
         return false;
     }
 
-    private FryingObjectSO GetInputFryingObject()
+    private FryingObjectSO GetInputFryingObject(KitchenObjectSO kitchenObjectSO)
     {
         foreach (FryingObjectSO fryingObjectSO in fryingObjectSOs)
         {
-            if (fryingObjectSO.inputKitchenObject.GetKitchenObjectSO() == GetKitchenObject().GetKitchenObjectSO())
+            if (fryingObjectSO.inputKitchenObject.GetKitchenObjectSO() == kitchenObjectSO)
             {
                 return fryingObjectSO;
             }
@@ -187,7 +223,7 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
         return null;
     }
 
-    private BurnedObjectSO getInputBurnedObject()
+    private BurnedObjectSO GetInputBurnedObject()
     {
         foreach (BurnedObjectSO burnedObject in burnedObjectSOs)
         {
@@ -199,6 +235,6 @@ public class StoveCounter : BaseCounter, IWasVisualCounter
 
     public bool IsFried()
     {
-        return state == State.Fried;
+        return state.Value == State.Fried;
     }
 }

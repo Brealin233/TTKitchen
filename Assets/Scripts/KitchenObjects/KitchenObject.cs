@@ -68,7 +68,6 @@ public class KitchenObject : NetworkBehaviour
     public void DestorySelfParent()
     {
         kitchenObjectParent.ClearKitchenObject();
-
     }
 
     public IKitchenObjectParent GetKitchenObjectParent()
