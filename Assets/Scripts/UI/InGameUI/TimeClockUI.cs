@@ -23,7 +23,7 @@ public class TimeClockUI : MonoBehaviour
 
     private void Update()
     {
-        if (TTKitchenGameManager.Instance.IseInGameState())
+        if (TTKitchenGameManager.Instance.IsInGameState())
         {
             Show();
             

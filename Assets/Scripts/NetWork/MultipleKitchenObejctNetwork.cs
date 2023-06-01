@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,29 +12,56 @@ public class MultipleKitchenObejctNetwork : NetworkBehaviour
     {
         Instance = this;
     }
-    
-    public void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO,IKitchenObjectParent kitchenPoint)
+
+    public void StartHost()
     {
-        SpawnKitchenObjectServerRpc(GetKitchenObjectSOIndexInList(kitchenObjectSO),kitchenPoint.GetNetworkObject());
+        NetworkManager.Singleton.ConnectionApprovalCallback += ConnectionApprovalCallback;
+
+        NetworkManager.Singleton.StartHost();
+    }
+
+    private void ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest,
+        NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
+    {
+        if (TTKitchenGameManager.Instance.isGameStartState())
+        {
+            connectionApprovalResponse.Approved = true;
+            connectionApprovalResponse.CreatePlayerObject = true;
+        }
+        else
+        {
+            connectionApprovalResponse.Approved = false;
+        }
+    }
+
+    public void StartClient()
+    {
+        NetworkManager.Singleton.StartClient();
+    }
+
+    public void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenPoint)
+    {
+        SpawnKitchenObjectServerRpc(GetKitchenObjectSOIndexInList(kitchenObjectSO), kitchenPoint.GetNetworkObject());
     }
 
     public void DestoryKitchenObject(KitchenObject kitchenObject)
     {
         DestoryKitchenObjectServerRpc(kitchenObject.NetworkObject);
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
-    private void SpawnKitchenObjectServerRpc(int kitchenObjectSOIndex,NetworkObjectReference kitchenPointNetworkReference)
+    private void SpawnKitchenObjectServerRpc(int kitchenObjectSOIndex,
+        NetworkObjectReference kitchenPointNetworkReference)
     {
         var kitchenObjectTransform =
-            Instantiate(GetKitchenObjectFromIndex(kitchenObjectSOIndex).prefabTransform);
+            Instantiate(GetKitchenObjectSOFromIndex(kitchenObjectSOIndex).prefabTransform);
 
         NetworkObject kitchenObjectNetworkObject = kitchenObjectTransform.GetComponent<NetworkObject>();
         kitchenObjectNetworkObject.Spawn(true);
 
         kitchenPointNetworkReference.TryGet(out NetworkObject kitchenNetworkObject);
         var kitchenObjectParent = kitchenNetworkObject.GetComponent<IKitchenObjectParent>();
-        
+
         kitchenObjectTransform.GetComponent<KitchenObject>().SetKitchenObjectParent(kitchenObjectParent);
     }
 
@@ -42,28 +70,27 @@ public class MultipleKitchenObejctNetwork : NetworkBehaviour
     {
         kitchenObjectReference.TryGet(out NetworkObject networkObjectKitchenObject);
         var kitchenObject = networkObjectKitchenObject.GetComponent<KitchenObject>();
-        
+
         DestoryKitchenObjectParentClientRpc(kitchenObjectReference);
-        
-        kitchenObject.DestorySelf();
     }
 
     [ClientRpc]
     private void DestoryKitchenObjectParentClientRpc(NetworkObjectReference kitchenObjectReference)
     {
-        
         kitchenObjectReference.TryGet(out NetworkObject networkObjectKitchenObject);
         var kitchenObject = networkObjectKitchenObject.GetComponent<KitchenObject>();
-        
+
+        kitchenObject.DestorySelf();
+
         kitchenObject.DestorySelfParent();
     }
 
-    private int GetKitchenObjectSOIndexInList(KitchenObjectSO kitchenObjectSO)
+    public int GetKitchenObjectSOIndexInList(KitchenObjectSO kitchenObjectSO)
     {
         return currentKitchenObjectSOList.KitchenObjectSOList.IndexOf(kitchenObjectSO);
     }
 
-    private KitchenObjectSO GetKitchenObjectFromIndex(int kitchenObjectIndex)
+    public KitchenObjectSO GetKitchenObjectSOFromIndex(int kitchenObjectIndex)
     {
         return currentKitchenObjectSOList.KitchenObjectSOList[kitchenObjectIndex];
     }

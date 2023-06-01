@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +18,7 @@ public class GamePauseUI : MonoBehaviour
       
       mainMenuButton.onClick.AddListener(() =>
       {
+         NetworkManager.Singleton.Shutdown();
          Loader.LoadScene(Loader.Scene.MainMenuScene);
       });
       
@@ -31,13 +31,13 @@ public class GamePauseUI : MonoBehaviour
 
    private void Start()
    {
-      TTKitchenGameManager.Instance.gamePauseEvent += OnGamePauseEvent;
-      TTKitchenGameManager.Instance.gameUnPauseEvent += OnGameUnPauseEvent;
+      TTKitchenGameManager.Instance.gameLocalPauseEvent += OnGamePauseEvent;
+      TTKitchenGameManager.Instance.gameLocalUnPauseEvent += OnGameLocalStartEvent;
       
       Hide();
    }
 
-   private void OnGameUnPauseEvent(object sender, EventArgs e)
+   private void OnGameLocalStartEvent(object sender, EventArgs e)
    {
       Hide();
    }

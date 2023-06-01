@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -36,15 +38,29 @@ public class PlateKitchenObject : KitchenObject
         }
         else
         {
-            kitchenObjectSOList.Add(kitchenObjectSO);
-            
-            complateVisualEvent?.Invoke(this,new ComplateVisualEvent()
-            {
-                kitchenObjectSO =  kitchenObjectSO
-            });
+            TryAddIngredientServerRpc(MultipleKitchenObejctNetwork.Instance.GetKitchenObjectSOIndexInList(kitchenObjectSO));
             
             return true;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TryAddIngredientServerRpc(int kitchenObjectIndex)
+    {
+        TryAddIngredientClientRpc(kitchenObjectIndex);
+    }
+
+    [ClientRpc]
+    private void TryAddIngredientClientRpc(int kitchenObjectIndex)
+    {
+        var kitchenObjectSO = MultipleKitchenObejctNetwork.Instance.GetKitchenObjectSOFromIndex(kitchenObjectIndex);
+        
+        kitchenObjectSOList.Add(kitchenObjectSO);
+            
+        complateVisualEvent?.Invoke(this,new ComplateVisualEvent()
+        {
+            kitchenObjectSO =  kitchenObjectSO
+        });
     }
 
     public List<KitchenObjectSO> GetKitchenObjectList()

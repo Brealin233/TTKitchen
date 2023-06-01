@@ -17,8 +17,8 @@ public class DeliveryManager : NetworkBehaviour
     public event EventHandler deliverySuccessBoardEvent;
     public event EventHandler deliveryFailedBoardEvent;
     public event EventHandler deliveryAnimEvent;
-    
-    
+
+
     [SerializeField] private RecipeListSO recipeList;
 
     private List<RecipeSO> waitingRecipeSOList;
@@ -43,19 +43,22 @@ public class DeliveryManager : NetworkBehaviour
         {
             return;
         }
-        
+
         spawnRecipeTime -= Time.deltaTime;
 
-        if (spawnRecipeTime < 0f)
+        if (TTKitchenGameManager.Instance.IsInGameState())
         {
-            spawnRecipeTime = spawnRecipeTimeMax;
-
-            if (spawnRecipeCount < spawnRecipeCountMax)
+            if (spawnRecipeTime < 0f)
             {
-                var waitingRecipeSOIndex = Random.Range(0, recipeList.RecipeListSOList.Count);
+                spawnRecipeTime = spawnRecipeTimeMax;
 
-                spawnRecipeCount++;
-                SpawnNewWaitingRecipeClientRpc(waitingRecipeSOIndex);
+                if (spawnRecipeCount < spawnRecipeCountMax)
+                {
+                    var waitingRecipeSOIndex = Random.Range(0, recipeList.RecipeListSOList.Count);
+
+                    spawnRecipeCount++;
+                    SpawnNewWaitingRecipeClientRpc(waitingRecipeSOIndex);
+                }
             }
         }
     }
@@ -64,8 +67,8 @@ public class DeliveryManager : NetworkBehaviour
     private void SpawnNewWaitingRecipeClientRpc(int waitingRecipeSOIndex)
     {
         waitingRecipeSOList.Add(recipeList.RecipeListSOList[waitingRecipeSOIndex]);
-                
-        deliverySpawnEvent?.Invoke(this,EventArgs.Empty);
+
+        deliverySpawnEvent?.Invoke(this, EventArgs.Empty);
     }
 
     public void DeliveryRecipe(PlateKitchenObject plateKitchenObject)
@@ -112,7 +115,7 @@ public class DeliveryManager : NetworkBehaviour
         for (int i = 0; i < waitingRecipeSOList.Count; i++)
         {
             bool matchRecipe = true;
-            
+
             // has same recipe number
             if (waitingRecipeSOList[i].recipeSOList.Count == plateKitchenObject.GetKitchenObjectList().Count)
             {
@@ -134,7 +137,6 @@ public class DeliveryManager : NetworkBehaviour
                 if (!hasSameRecipe)
                 {
                     matchRecipe = false;
-                    
                 }
 
                 if (matchRecipe)
@@ -160,12 +162,12 @@ public class DeliveryManager : NetworkBehaviour
     {
         deliveredCount++;
         waitingRecipeSOList.Remove(waitingRecipeSOList[waitingRecipeSOIndex]);
-            
-        deliveryDisableEvent?.Invoke(this,EventArgs.Empty);
-        deliverySuccessEvent?.Invoke(this,EventArgs.Empty);
-        deliverySuccessBoardEvent?.Invoke(this,EventArgs.Empty);
-        deliveryAnimEvent?.Invoke(this,EventArgs.Empty);
-                    
+
+        deliveryDisableEvent?.Invoke(this, EventArgs.Empty);
+        deliverySuccessEvent?.Invoke(this, EventArgs.Empty);
+        deliverySuccessBoardEvent?.Invoke(this, EventArgs.Empty);
+        deliveryAnimEvent?.Invoke(this, EventArgs.Empty);
+
         DeliveryStateUI.Instance.Show();
 
         spawnRecipeCount--;
@@ -180,9 +182,9 @@ public class DeliveryManager : NetworkBehaviour
     [ClientRpc]
     private void DeliverIncorrectRecipeClientRpc()
     {
-        deliveryFaildEvent?.Invoke(this,EventArgs.Empty);
-        deliveryFailedBoardEvent?.Invoke(this,EventArgs.Empty);
-        deliveryAnimEvent?.Invoke(this,EventArgs.Empty);
+        deliveryFaildEvent?.Invoke(this, EventArgs.Empty);
+        deliveryFailedBoardEvent?.Invoke(this, EventArgs.Empty);
+        deliveryAnimEvent?.Invoke(this, EventArgs.Empty);
 
         DeliveryStateUI.Instance.Show();
     }
